@@ -1,1 +1,7 @@
 venv/
+*.pyc
+*.pyo
+__pycache__/
+.coverage
+*.egg-info
+
