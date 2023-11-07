@@ -220,14 +220,19 @@ if __name__ == "__main__":
     model.eval()
     print("Done loading model and tokenizer!\n")
 
-
+    
 
     # Get the question-answer pair
     question = "What is the meaning of life? "
     answer = "42"
 
+    print("\nQUESTION: ", question)
+    print("ANSWER: ", answer, "\n")
+
     question_ids = tokenizer.encode(question, return_tensors="pt").to(model.device)
     answer_ids = tokenizer.encode(answer, return_tensors="pt").to(model.device)
+
+    assert answer_ids.shape[0] == answer_ids.shape[1] == 1 # must be only 1 answer token!
 
     # question_ids = torch.tensor([[204, 23, 1684, 25, 204, 28245, 56647, 64619]], dtype=torch.int64)
     # answer_ids = torch.tensor([[62469]], dtype=torch.int64)
