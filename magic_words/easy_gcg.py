@@ -10,6 +10,7 @@ The goal is to offer an interface identical to `greedy_prompt_hack_qa()` in
 """
 
 import torch
+import transformers
 from tqdm import tqdm
 import numpy as np
 import pdb
@@ -202,7 +203,16 @@ def get_prompt_grads(model,
     Returns: grads[1, num_tokens, vocab_size], loss
     """
     model.zero_grad()
-    embed_weights = model.transformer.word_embeddings.weight # [vocab, hidden_size]
+
+    # Getting the embedding weights -- depends on the model type
+    if str(type(model)).startswith("<class 'transformers_modules.tiiuae.falcon"):
+        embed_weights = model.transformer.word_embeddings.weight # [vocab, hidden_size]
+    elif str(type(model)).startswith("<class 'transformers.models.gpt2"):
+        embed_weights = model.transformer.wte.weight # [vocab, hidden_size]
+    else: 
+        # Exception: we don't know how to get the embedding weights for this model
+        print(model)
+        raise Exception(f"Unknown model type: {type(model)}")
 
     # get the one-hot prompt_ids, compute the embeddings
     one_hot_prompt_ids = torch.nn.functional.one_hot(prompt_ids, num_classes=embed_weights.shape[0]).to(model.dtype) # [batch, seq_len, vocab]

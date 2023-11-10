@@ -18,12 +18,14 @@ Then, we will perform Greedy Coordinate Gradient search for prompt length 4, 6,
 continue checking at each length for the argmax condition, and return. 
 """
 import pdb
+import argparse
 
 import torch 
 import numpy as np
 from magic_words import greedy_prompt_hack_qa_ids
 from magic_words import easy_gcg_qa_ids
 from magic_words import BruteForce
+
 
 import transformers
 from transformers import AutoTokenizer, AutoModelForCausalLM
@@ -202,23 +204,80 @@ def backoff_hack_qa_ids(question_ids:torch.Tensor,
 if __name__ == "__main__": 
     """ Demonstration of the backoff script -- same 
     """
+    # Parse the args
+    parser = argparse.ArgumentParser()
+    # Add the argument
+    parser.add_argument('--model', choices=['falcon-7b', 'falcon-40b', 'llama-7b', 'gpt-2-small'],
+                        help='The model to use (falcon-7b, falcon-40b, llama-7b, or gpt-2-small)', 
+                        default='falcon-7b')
+    #seed argument -- int, default to 42
+    parser.add_argument('--seed', type=int, default=42, help='The random seed to use with torch (default: 42). Used in GCG algorithm sampling.')
+    args = parser.parse_args()
+
+    # set the pytorch seed
+    torch.manual_seed(args.seed)
+
 
     # get model and tokenizer -- tiiuae/falcon-7b
-    model_name = "tiiuae/falcon-7b"
-    print(f"Loading model `{model_name}`...")
-    tokenizer = AutoTokenizer.from_pretrained(model_name, padding_side="left")
-    tokenizer.pad_token = tokenizer.eos_token
-    pipeline = transformers.pipeline(
-        "text-generation",
-        model=model_name,
-        tokenizer=tokenizer,
-        torch_dtype=torch.bfloat16,
-        trust_remote_code=True,
-        device_map="auto",
-    )
-    model = pipeline.model
-    model.eval()
-    print("Done loading model and tokenizer!\n")
+    if args.model == 'falcon-7b':
+        model_name = "tiiuae/falcon-7b"
+        print(f"Loading model `{model_name}`...")
+        tokenizer = AutoTokenizer.from_pretrained(model_name, padding_side="left")
+        tokenizer.pad_token = tokenizer.eos_token
+        pipeline = transformers.pipeline(
+            "text-generation",
+            model=model_name,
+            tokenizer=tokenizer,
+            torch_dtype=torch.bfloat16,
+            trust_remote_code=True,
+            device_map="auto",
+        )
+        model = pipeline.model
+        model.eval()
+        print("Done loading model and tokenizer!\n")
+    elif args.model == 'falcon-40b':
+        model_name = "tiiuae/falcon-40b"
+        print(f"Loading model `{model_name}`...")
+        tokenizer = AutoTokenizer.from_pretrained(model_name, padding_side="left")
+        tokenizer.pad_token = tokenizer.eos_token
+        pipeline = transformers.pipeline(
+            "text-generation",
+            model=model_name,
+            tokenizer=tokenizer,
+            torch_dtype=torch.bfloat16,
+            trust_remote_code=True,
+            device_map="auto",
+        )
+        model = pipeline.model
+        model.eval()
+        print("Done loading model and tokenizer!\n")
+    elif args.model == 'llama-7b': 
+        model_name = "huggyllama/llama-7b"
+        print(f"Loading model {model_name}...")
+        tokenizer = AutoTokenizer.from_pretrained(model_name, 
+                                              add_bos_token=False,
+                                              add_eos_token=False)
+        model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
+        model = model.half() # convert to fp16 for fast inference.
+        model.eval()
+        print("Done loading model and tokenizer!\n")
+    elif args.model == "gpt-2-small": 
+        model_name = "gpt2"
+        print(f"Loading model {model_name}...")
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        # set the pad token as the eos token for the tokenizer 
+        tokenizer.pad_token = tokenizer.eos_token
+        model = AutoModelForCausalLM.from_pretrained(model_name)
+        model = model.to('cuda')
+        model = model.half()
+        model.eval()
+    else: 
+        # exception: model not found
+        raise ValueError(f"Model `{args.model}` not found. Please choose from `falcon-7b`, `falcon-40b`, `llama-7b`, or `gpt-2-small`.")
+    
+
+
+
 
     
 
@@ -243,6 +302,20 @@ if __name__ == "__main__":
     # Call backoff hack on the question-answer pair
     return_dict = backoff_hack_qa_ids(question_ids, answer_ids, model, tokenizer)
     print("Return dictionary: ", return_dict)
+
+    optimal_prompt_str = tokenizer.batch_decode(return_dict['optimal_prompt'])[0]
+
+    print("\n\nDecoded Optimal prompt (u): ", optimal_prompt_str)
+    print("Optimal prompt length (tokens, |u|): ", return_dict['optimal_prompt_length'])
+    print("Prompt loss: ", return_dict['prompt_loss'])
+    if return_dict['prompt_correct']: 
+        print("Prompt is correct!")
+        print(f"\nTHEREFORE: `{answer}` = argmax_a P(a | `{optimal_prompt_str}` + `{question}`)")
+    else: 
+        print("Unable to find an optimal prompt that gets the correct answer.\nConsider increasing the maximum allowable prompt length :)")
+        print("\nBest prompt found: ", optimal_prompt_str)
+
+
 
 
 
