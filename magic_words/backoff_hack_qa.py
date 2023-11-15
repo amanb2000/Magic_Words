@@ -62,18 +62,29 @@ def backoff_hack_qa_ids(question_ids:torch.Tensor,
     base_answer_logits = q_logits[:, -1, :]
     base_answer_pred = base_answer_logits.argmax().item()
     base_correct = base_answer_pred == answer_ids[0]
+    base_loss = torch.nn.functional.cross_entropy(base_answer_logits.cuda(), 
+                                                  answer_ids[0]).item()
     if base_correct: 
         if verbose:
             print("Model already gets the correct answer!")
-        return torch.tensor([], dtype=torch.int64)
+        return {
+            'optimal_prompt': [], 
+            'optimal_prompt_length': 0, 
+            'prompt_loss': -1.0, 
+            'search_method': 'base',
+            'prompt_correct': True, 
+            'base_loss': float(base_loss),
+            'base_correct': True
+        } 
     elif verbose: 
-        print("Model does not get the correct answer.")
-    base_loss = torch.nn.functional.cross_entropy(base_answer_logits.cuda(), 
-                                                  answer_ids[0]).item()
+        print("Model does not get the correct answer with no prompt.")
+
+
     if verbose: 
         print("Base loss: ", base_loss)
 
     return_dict['base_loss'] = float(base_loss)
+    return_dict['base_correct'] = False
 
     # Now we perform greedy search. 
     for i in greedy_lengths:  # 1, 2, 3
