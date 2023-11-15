@@ -3,6 +3,7 @@ from magic_words.batch_compute_score import batch_compute_score
 from magic_words.prompt_hack import greedy_prompt_hack
 from magic_words.search_limiters import SearchLimiter, BruteForce
 from magic_words.prompt_hack_qa import greedy_prompt_hack_qa, greedy_prompt_hack_qa_ids
+from magic_words.backoff_hack_qa import backoff_hack_qa_ids
 
 # Gumbel softmax
 # from magic_words.gumbel_softmax_main import gumbel_prompt_hack, TauScheduler
