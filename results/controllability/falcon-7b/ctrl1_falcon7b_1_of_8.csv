@@ -1,2 +1,0 @@
-question,question_ids,answer,answer_ids,base_loss,search_method,best_prompt,best_prompt_ids,prompt_length,prompted_loss,base_correct,prompt_correct,question_length
-" the outgoing President, saying, "" For myself and for our Nation, I want to thank my predecessor for all he has done to heal our","[248, 33750, 3503, 204, 23, 3225, 204, 23, 204, 13, 1133, 2838, 273, 312, 568, 12327, 204, 23, 295, 729, 271, 4147, 491, 33109, 312, 455, 332, 504, 1782, 271, 12668, 568]",techn,18355,21.125,gcg,Techn,"[13741, 56839, 12668, 52062, 2595, 273, 31732, 32602]",8,1.7421875,False,True,32
