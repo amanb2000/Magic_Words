@@ -23,7 +23,7 @@ python3 scripts/reachability.py \
     --output_file $BASE_PATH$OUTPUT_CSV \
     --model $MODEL_NAME \
     --worker_num $1 \
-    --num_workers $2 
+    --num_workers $2
 
 curl -X POST -H "Content-Type: application/json" -d "{\"Worker\": \"$(cat ~/WHOAMI)\", \"Name\":\"$OUTPUT_CSV\"}" https://maker.ifttt.com/trigger/experiment_done/json/with/key/cyKYvYe7Q2IzhoX2XpQUd1
 
