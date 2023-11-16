@@ -12,7 +12,6 @@ Experiments will be largely similar to the reachability experiments (in `results
 
 
 ## Falcon-7b Experiments
- - [ ] Run the main experiments.
 ```bash
 CUDA_VISIBLE_DEVICES=0 bash scripts/falcon_7b.sh 0 32  # ran at ~4:30a on Wed Nov 15
 CUDA_VISIBLE_DEVICES=1 bash scripts/falcon_7b.sh 1 32
@@ -24,4 +23,18 @@ CUDA_VISIBLE_DEVICES=0 bash scripts/falcon_7b.sh 4 32  # ran at ~4:30a on Wed No
 CUDA_VISIBLE_DEVICES=1 bash scripts/falcon_7b.sh 5 32
 CUDA_VISIBLE_DEVICES=2 bash scripts/falcon_7b.sh 6 32
 CUDA_VISIBLE_DEVICES=3 bash scripts/falcon_7b.sh 7 32
+```
+
+
+## Llama-7b Experiments
+```bash
+CUDA_VISIBLE_DEVICES=0 bash scripts/llama_7b.sh 0 32  # ran at ~4:30a on Wed Nov 15
+CUDA_VISIBLE_DEVICES=1 bash scripts/llama_7b.sh 1 32
+CUDA_VISIBLE_DEVICES=2 bash scripts/llama_7b.sh 2 32
+CUDA_VISIBLE_DEVICES=3 bash scripts/llama_7b.sh 3 32
+
+CUDA_VISIBLE_DEVICES=0 bash scripts/llama_7b.sh 4 32  # ran at ~4:30a on Wed Nov 15
+CUDA_VISIBLE_DEVICES=1 bash scripts/llama_7b.sh 5 32
+CUDA_VISIBLE_DEVICES=2 bash scripts/llama_7b.sh 6 32
+CUDA_VISIBLE_DEVICES=3 bash scripts/llama_7b.sh 7 32
 ```
