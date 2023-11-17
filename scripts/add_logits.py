@@ -19,7 +19,7 @@ import pdb
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-from .reachability import load_model, load_input_df
+from scripts.reachability import load_model, load_input_df
 
 def parse_args(): 
     # get the input_csv path, the model name, output path
@@ -46,6 +46,35 @@ def parse_args():
         print(f"\t{arg}: {getattr(args, arg)}")
     return args
 
+
+
+def get_logits(question_ids, model): 
+    """ This function returns the logits of the answer_ids given the question_ids. 
+
+    Returns the logits as a 1-dimensional regular python list of floats.
+    """
+    # assertions on question_ids handled in `load_input_df`
+    # assertions on model handled in `load_model`
+    # now we get the logits
+    input_ids = torch.tensor(question_ids).unsqueeze(0).to(model.device) # [1, num_toks]
+    with torch.no_grad():
+        outputs = model(input_ids) # [1, num_toks, vocab_size]
+        logits = outputs.logits[0, -1, :] # [vocab_size]
+    return logits.tolist()
+
+def get_rank(logits, desired_word): 
+    # Check if desired_word is within the valid range
+    if not (0 <= desired_word < len(logits)):
+        raise ValueError("desired_word is out of range")
+
+    # Get the logit value for the desired_word
+    desired_logit = logits[desired_word]
+
+    # Count how many words have a higher logit value
+    rank = sum(1 for logit in logits if logit > desired_logit)
+
+    return rank
+
 def add_logits_and_rank(input_df, model, tokenizer): 
     """ This function adds columns `base_logits` and `base_rank` to the input_df. 
     """
@@ -56,21 +85,24 @@ def add_logits_and_rank(input_df, model, tokenizer):
 
     for i, row in input_df.iterrows():
         # get the question and answer ids
-        question_ids = row['question_ids']
-        answer_ids = row['answer_ids']
-        pdb.set_trace()
+        question_ids = row['question_ids'] # list of ints 
+        answer_ids = row['answer_ids'] # int
 
         # get the logits
-        logits = get_logits(question_ids, answer_ids, model)
+        logits = get_logits(question_ids, model)
 
         # get the rank
-        rank = get_rank(logits)
+        rank = get_rank(logits, answer_ids)
 
         # append to the lists
         logits_list.append(logits)
         rank_list.append(rank)
 
+    # add the columns to the dataframe
+    input_df['base_logits'] = logits_list
+    input_df['base_rank'] = rank_list
 
+    return input_df
 
 
 def main(): 
@@ -83,7 +115,14 @@ def main():
     model, tokenizer = load_model(args.model)
 
     # add the new columns
+    print("Computing the logits and ranks...")
     new_df = add_logits_and_rank(input_df, model, tokenizer)
+    print("Done.")
+
+    # output the new dataframe
+    print("Outputting CSV...")
+    new_df.to_csv(args.output_file, index=False, lineterminator='\n')
+    print("Done.")
 
 
 
