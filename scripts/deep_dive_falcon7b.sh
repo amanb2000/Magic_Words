@@ -8,7 +8,7 @@
 BASE_PATH="results/deep_dive/"
 
 
-INPUT_CSV="falcon7b_skip265_states250.csv"
+INPUT_CSV="falcon7b_skip265_states20.csv"
 OUTPUT_CSV="falcon-7b/dive1_${1}_of_${2}.csv"
 
 echo "Input CSV: $BASE_PATH$INPUT_CSV"
