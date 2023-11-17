@@ -26,9 +26,9 @@ python3 scripts/reachability.py \
     --worker_num $1 \
     --num_workers $2 
 
-# curl -X POST -H "Content-Type: application/json" -d "{\"Worker\": \"$(cat ~/WHOAMI)\", \"Name\":\"$OUTPUT_CSV\"}" https://maker.ifttt.com/trigger/experiment_done/json/with/key/cyKYvYe7Q2IzhoX2XpQUd1
+curl -X POST -H "Content-Type: application/json" -d "{\"Worker\": \"$(cat ~/WHOAMI)\", \"Name\":\"$OUTPUT_CSV\"}" https://maker.ifttt.com/trigger/experiment_done/json/with/key/cyKYvYe7Q2IzhoX2XpQUd1
 
-# git pull
-# git add $BASE_PATH$OUTPUT_CSV
-# git commit -m "[$(cat ~/WHOAMI)] Add $BASE_PATH$OUTPUT_CSV"
-# git push
+git pull
+git add $BASE_PATH$OUTPUT_CSV
+git commit -m "[$(cat ~/WHOAMI)] Add $BASE_PATH$OUTPUT_CSV"
+git push

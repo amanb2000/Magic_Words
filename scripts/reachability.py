@@ -197,8 +197,14 @@ def compute_reachability(input_df, model, tokenizer, blacklist,
     return results_df
 
 def add_row(results_df, row, return_dict): 
-    if type(return_dict['optimal_prompt'][0]) == list: 
+    if len(return_dict['optimal_prompt']) > 0 and type(return_dict['optimal_prompt'][0]) == list: 
         return_dict['optimal_prompt'] = return_dict['optimal_prompt'][0]
+
+    if len(return_dict['optimal_prompt']) > 0: 
+        best_prompt = tokenizer.batch_decode(return_dict['optimal_prompt'])[0]
+    else: # no prompt -- base correct must be true.
+        best_prompt = ''
+
     new_row = pd.DataFrame([{
         'question': row['question'],
         'question_ids': row['question_ids'],
@@ -208,7 +214,7 @@ def add_row(results_df, row, return_dict):
 
         'base_loss': return_dict['base_loss'],
         'search_method': return_dict['search_method'],
-        'best_prompt': tokenizer.batch_decode(return_dict['optimal_prompt'])[0],
+        'best_prompt': best_prompt,
         'best_prompt_ids': return_dict['optimal_prompt'],
         'prompt_length': return_dict['optimal_prompt_length'],
         'prompted_loss': return_dict['prompt_loss'], 
