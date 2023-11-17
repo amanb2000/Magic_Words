@@ -27,10 +27,11 @@ search and greedy coordinate gradient (GCG). It applies the same algorithms as
 in the [LLM Control Theory](https://arxiv.org/abs/2310.04444) paper: 
 
 ```
-python3 scripts/backoff_hack.py
+python3 scripts/backoff_hack_demo.py
 ```
-
-See the comments in the script for further details. 
+See the comments in the script for further details. [This issue
+thread](https://github.com/amanb2000/Magic_Words/blob/1986861b51433fb7ad55ef39cde98afd1d76535c/scripts/backoff_hack_demo.py#L113)
+is also a good resource for getting up and running.
 
 
 ## Testing
