@@ -15,6 +15,8 @@ import argparse
 import os
 import sys 
 import pdb
+from tqdm import tqdm
+import math
 
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
@@ -62,6 +64,24 @@ def get_logits(question_ids, model):
         logits = outputs.logits[0, -1, :] # [vocab_size]
     return logits.tolist()
 
+
+def log_sum_exp(logits):
+    """Compute log-sum-exp in a numerically stable way."""
+    max_logit = max(logits)
+    sum_exp = sum(math.exp(l - max_logit) for l in logits)
+    return max_logit + math.log(sum_exp)
+
+def softmax(logits):
+    """Compute softmax values using log-sum-exp for numerical stability."""
+    lse = log_sum_exp(logits)
+    return [math.exp(l - lse) for l in logits]
+
+def entropy_of_logits(logits):
+    """Compute the entropy of a list of logits using softmax."""
+    probabilities = softmax(logits)
+    entropy = -sum(p * math.log(p) for p in probabilities if p > 0)
+    return entropy
+
 def get_rank(logits, desired_word): 
     # Check if desired_word is within the valid range
     if not (0 <= desired_word < len(logits)):
@@ -82,8 +102,10 @@ def add_logits_and_rank(input_df, model, tokenizer):
     # now we iterate through the rows and add the logits and rank 
     logits_list = []
     rank_list = []
+    entropies = []
+    num_iters = len(input_df)
 
-    for i, row in input_df.iterrows():
+    for i, row in tqdm(input_df.iterrows(), total=num_iters):
         # get the question and answer ids
         question_ids = row['question_ids'] # list of ints 
         answer_ids = row['answer_ids'] # int
@@ -94,13 +116,18 @@ def add_logits_and_rank(input_df, model, tokenizer):
         # get the rank
         rank = get_rank(logits, answer_ids)
 
+        # get the entropy 
+        entropy = entropy_of_logits(logits)
+
         # append to the lists
         logits_list.append(logits)
         rank_list.append(rank)
+        entropies.append(entropy)
 
     # add the columns to the dataframe
     input_df['base_logits'] = logits_list
     input_df['base_rank'] = rank_list
+    input_df['base_entropy'] = entropies
 
     return input_df
 
