@@ -4,4 +4,9 @@ venv/
 __pycache__/
 .coverage
 *.egg-info
+ranked*.csv
 
+
+# Super large files
+results/controllability/falcon-7b/ctrl1_ranked_k10_falcon7b_1250.csv
+# results/wiki_reachability/ranked_k10_falcon7b_wiki5k.csv

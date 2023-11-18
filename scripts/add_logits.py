@@ -33,6 +33,9 @@ def parse_args():
     parser.add_argument('--model', type=str, required=True,
                         choices=['falcon-7b', 'falcon-40b', 'llama-7b', 'gpt-2-small'], 
                         help='Name of HuggingFace model.')
+
+    parser.add_argument('--rank_only', action='store_true',
+                        help='If true, only include the rank (not the full logits) in the output CSV.')
     
     args = parser.parse_args() 
 
@@ -95,7 +98,7 @@ def get_rank(logits, desired_word):
 
     return rank
 
-def add_logits_and_rank(input_df, model, tokenizer): 
+def add_logits_and_rank(input_df, model, tokenizer, rank_only=False): 
     """ This function adds columns `base_logits` and `base_rank` to the input_df. 
     """
     # assertions on input_df handled in `load_input_df`
