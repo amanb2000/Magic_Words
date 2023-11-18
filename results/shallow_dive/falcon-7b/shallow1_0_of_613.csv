@@ -1,0 +1,5 @@
+question,question_ids,answer,answer_ids,base_loss,search_method,best_prompt,best_prompt_ids,prompt_length,prompted_loss,base_correct,prompt_correct,question_length
+" following his debut album, but received","[1863, 545, 9654, 5026, 204, 23, 480, 3245]", little,1278,1.8828125,base,,[],0,-1.0,True,True,8
+" patch of grass, one of the firemen","[11369, 275, 8344, 204, 23, 532, 275, 248, 2858, 3279]", would,631,4.40625,greedy,atever,[3796],1,1.859375,False,True,10
+", a defector from the Church of Scientology provided the Sunday Times with internal documents detailing the smear campaign","[204, 23, 241, 984, 7856, 427, 248, 5222, 275, 12881, 1303, 2930, 248, 4657, 6683, 335, 5788, 5759, 27209, 248, 52350, 3942]", mounted,15472,5.8125,gcg, smear,"[52350, 6035, 14287, 24248, 28469, 59521]",6,1.296875,False,True,22
+@-@ 10 is equipped to carry laser @-@ guided bombs. A @-@ 10s usually fly with an ALQ,"[43, 24, 43, 204, 696, 304, 10236, 271, 3837, 11441, 204, 43, 24, 43, 15337, 24077, 204, 25, 317, 204, 43, 24, 43, 204, 696, 94, 2767, 7053, 335, 267, 8710, 60]",s,94,8.875,greedy, Terrier,"[60081, 60049, 53328]",3,1.15625,False,True,32
