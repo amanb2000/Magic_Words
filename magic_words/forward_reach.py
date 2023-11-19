@@ -12,6 +12,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 
 from magic_words.forward_gcg import get_reachable_gcg_set
 from magic_words.get_answer import _get_answer_ids, _batch_get_answer_ids
+from magic_words.utils import _naive_ingest
 
 
 def _get_prompt_ids_brute_force(tokenizer): 
@@ -24,100 +25,7 @@ def _get_prompt_ids_brute_force(tokenizer):
 
 
 
-def _naive_ingest(model, tokenizer, 
-                  reachable_df: pd.DataFrame, 
-                  prompt_ids: torch.Tensor, 
-                  answer_ids: torch.Tensor, 
-                  base_logits: torch.Tensor, 
-                  question_ids: torch.Tensor, 
-                  question: str): 
-    """ Adds rows to `reachable_df` from `prompt_ids` if the corresponding 
-    `answer_ids` is novel (i.e., not contained in `reachable_df`). 
 
-    `reachable_df` is a pandas dataframe with columns:
-        [question, question_ids, answer, answer_ids, best_prompt,
-        best_prompt_ids, base_loss, search_method, prompt_length, prompted_loss,
-        base_correct, prompt_correct, question_length]
-
-    `prompt_ids` has shape [batch, prompt_length] (torch.Tensor)
-    `answer_ids` has shape [batch, 1] (torch.Tensor)
-    `question_ids` has shape [1, question_length] (torch.Tensor)
-    """
-    assert prompt_ids.shape[0] == answer_ids.shape[0], "prompt_ids and answer_ids must have the same batch dimension."
-    assert prompt_ids.shape[1] == 1
-    assert question_ids.shape[0] == 1
-
-    batch = prompt_ids.shape[0]
-
-    # R_t is the reachable set. We will keep it updated as we add new rows 
-    # to reachable_df.
-    R_t = {x for x in reachable_df['answer_ids'].tolist()} 
-
-    for i in tqdm(range(batch)): 
-        # Let's check of answer_ids[i] is in R_t. If so, we continue. 
-        if answer_ids[i].item() in R_t:
-            continue
-
-        print("\tNew answer: ", tokenizer.decode(answer_ids[i].item()))
-
-
-        # If we're here, we must add a new row to reachable_df.
-        _question = tokenizer.batch_decode(question_ids)[0] # str
-        assert _question == question, "question_ids and question must match."
-        _answer_ids = answer_ids[i].item() # int
-        _answer = tokenizer.decode(_answer_ids) # str
-
-        best_prompt_ids = prompt_ids[i,:] # [prompt_length] tensor
-        best_prompt = tokenizer.batch_decode(best_prompt_ids)[0] # str
-
-        base_loss = torch.nn.functional.cross_entropy(base_logits[:, -1, :], torch.tensor([_answer_ids]).to(model.device)).item()
-
-        search_method = 'forward'
-        prompt_length = best_prompt_ids.shape[0] #CHECK 
-
-        # compute prompted logits
-        input_ids = torch.cat([best_prompt_ids.unsqueeze(0), question_ids], dim=-1)
-        with torch.no_grad():
-            logits = model(input_ids).logits
-
-        prompted_loss = torch.nn.functional.cross_entropy(logits[:, -1, :], torch.tensor([_answer_ids]).to(model.device)).item()
-        base_correct = False
-        prompt_correct = True
-        question_length = question_ids.shape[1]
-
-
-        new_row = { 'question': question, #str
-                    'question_ids': question_ids[0].tolist(), # 1-dim list
-                    'answer': _answer,
-                    'answer_ids': _answer_ids, # int'
-                    'best_prompt': best_prompt, 
-                    'best_prompt_ids': best_prompt_ids.tolist(),
-                    'base_loss': base_loss, # float
-                    'search_method': search_method, # str
-                    'prompt_length': prompt_length, # int
-                    'prompted_loss': prompted_loss, #float
-                    'base_correct': base_correct, # bool, false
-                    'prompt_correct': prompt_correct, # bool, true
-                    'question_length': question_length
-                    }
-        # pdb.set_trace()
-        print("Comparing new_row's dtypes with reachable df: ")
-        new_df = pd.DataFrame([new_row])
-        # for key in new_row.keys(): 
-        #     print("")
-        #     print(f"{key}: {type(new_row[key])} vs. {type(reachable_df[key].iloc[0])}")
-        #     print(f"{key}: {type(new_row[key])} vs. {type(reachable_df[key].dtype)}")
-        #     print(f"{key}: {new_row[key]} vs. {reachable_df[key].tolist()[0]}")
-
-        # add the new row to reachable_df
-
-        reachable_df_ = pd.concat([reachable_df, new_df], ignore_index=True)
-        reachable_df = reachable_df_
-
-        # add the new answer_ids to R_t
-        R_t.add(_answer_ids)
-    
-    return reachable_df
 
 
 def get_base_row(x_0, model, tokenizer): 

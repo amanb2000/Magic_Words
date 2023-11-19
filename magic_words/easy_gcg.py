@@ -18,6 +18,8 @@ import pdb
 from magic_words import batch_compute_score, compute_score
 from .search_limiters import SearchLimiter
 
+from magic_words.utils import _naive_ingest
+
 
 def easy_gcg_qa(question_str:str,
                 answer_str:str, 

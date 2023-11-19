@@ -23,6 +23,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 
 from magic_words.get_answer import _get_answer_ids, _batch_get_answer_ids
 from magic_words.easy_gcg import get_alt_prompt_ids, get_embedding_weights
+from magic_words.utils import _naive_ingest
 
 
 
@@ -131,7 +132,6 @@ def get_prompt_divergence_grads(model, tokenizer, start_prompt, x_0, R_t):
     # add a batch dimension
     reached_logits = reached_logits.unsqueeze(0) # [1, vocab_size]
 
-    pdb.set_trace()
     answer_loss = -torch.nn.functional.cross_entropy(answer_logits, reached_logits) # minimize this -- make it very negative -> far from reached set.
 
     loss = answer_loss.mean()
@@ -190,7 +190,7 @@ def get_reachable_gcg_set(x_0, model, tokenizer,
         grads, loss = get_prompt_divergence_grads(model, tokenizer, start_prompt, x_0, R_t)
 
         # get the top k token swaps for this prompt
-        assert grads.shape == (1, num_tokens, tokenizer.vocab_size)
+        assert grads.shape == (1, start_prompt.shape[1], tokenizer.vocab_size)
 
         # Now we get the top_k most promising swaps for each token. 
         # X[i,:] holds the k most promising token swaps for token i 
@@ -201,5 +201,18 @@ def get_reachable_gcg_set(x_0, model, tokenizer,
 
         # Now we compute the answer_ids for each of these alternate prompts
         # and add them to the reachable set if they are not already in it.
+        print("Computing answer_ids for each alt_prompt_ids...")
+        answer_ids = _batch_get_answer_ids(alt_prompt_ids, x_0, model, tokenizer, max_parallel=max_parallel)
+        print("Done.\n")
+
+        # add the new rows to the reachable set
+        # 3: ingest the answer_ids into reachable_df -- only add if `answer_ids` has 
+        # not been seen before. 
+        reachable_df = _naive_ingest(model, tokenizer, reachable_df, 
+                                    alt_prompt_ids, answer_ids, base_logits, 
+                                    x_0, question)
         
+        # update R_t
+        R_t = {x for x in reachable_df['answer_ids'].tolist()}
+        print(f"\n\n=== R_t has {len(R_t)} elements ===\n\n")
 
