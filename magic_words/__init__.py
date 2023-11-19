@@ -12,3 +12,9 @@ from magic_words.backoff_hack_qa import backoff_hack_qa_ids
 # from magic_words.coordinate_descent import gcg_prompt_hack
 # from magic_words.coordinate_descent_qa import gcg_prompt_hack_qa
 from magic_words.easy_gcg import easy_gcg_qa, easy_gcg_qa_ids
+
+# Forward Generation 
+from magic_words.forward_reach import get_reachable_set, forward_generate
+
+# Answer checking 
+from magic_words.get_answer import _get_answer_ids, _batch_get_answer_ids
