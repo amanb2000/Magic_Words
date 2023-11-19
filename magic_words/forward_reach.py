@@ -58,7 +58,7 @@ def _batch_get_answer_ids(prompt_ids, question_ids, model, tokenizer, max_parall
     answer_ids = torch.zeros(batch, 1, dtype=torch.long).to(model.device)
 
     # loop through each batch
-    for i in range(num_batches): 
+    for i in tqdm(range(num_batches)): 
         # get the batch of prompt_ids and question_ids
         batch_start = i*max_parallel
         batch_end = min((i+1)*max_parallel, batch)
@@ -73,8 +73,107 @@ def _batch_get_answer_ids(prompt_ids, question_ids, model, tokenizer, max_parall
 
     return answer_ids
 
+def _naive_ingest(model, tokenizer, 
+                  reachable_df: pd.DataFrame, 
+                  prompt_ids: torch.Tensor, 
+                  answer_ids: torch.Tensor, 
+                  base_logits: torch.Tensor, 
+                  question_ids: torch.Tensor, 
+                  question: str): 
+    """ Adds rows to `reachable_df` from `prompt_ids` if the corresponding 
+    `answer_ids` is novel (i.e., not contained in `reachable_df`). 
 
-def get_reachable_set(x_0, model, tokenizer, max_prompt_tokens=10):
+    `reachable_df` is a pandas dataframe with columns:
+        [question, question_ids, answer, answer_ids, best_prompt,
+        best_prompt_ids, base_loss, search_method, prompt_length, prompted_loss,
+        base_correct, prompt_correct, question_length]
+
+    `prompt_ids` has shape [batch, prompt_length] (torch.Tensor)
+    `answer_ids` has shape [batch, 1] (torch.Tensor)
+    `question_ids` has shape [1, question_length] (torch.Tensor)
+    """
+    assert prompt_ids.shape[0] == answer_ids.shape[0], "prompt_ids and answer_ids must have the same batch dimension."
+    assert prompt_ids.shape[1] == 1
+    assert question_ids.shape[0] == 1
+
+    batch = prompt_ids.shape[0]
+
+    # R_t is the reachable set. We will keep it updated as we add new rows 
+    # to reachable_df.
+    R_t = {x for x in reachable_df['answer_ids'].tolist()} 
+
+    for i in tqdm(range(batch)): 
+        # Let's check of answer_ids[i] is in R_t. If so, we continue. 
+        if answer_ids[i].item() in R_t:
+            continue
+
+        print("\tNew answer: ", tokenizer.decode(answer_ids[i].item()))
+
+
+        # If we're here, we must add a new row to reachable_df.
+        _question = tokenizer.batch_decode(question_ids)[0] # str
+        assert _question == question, "question_ids and question must match."
+        _answer_ids = answer_ids[i].item() # int
+        _answer = tokenizer.decode(_answer_ids) # str
+
+        best_prompt_ids = prompt_ids[i,:] # [prompt_length] tensor
+        best_prompt = tokenizer.batch_decode(best_prompt_ids)[0] # str
+
+        base_loss = torch.nn.functional.cross_entropy(base_logits[:, -1, :], torch.tensor([_answer_ids]).to(model.device)).item()
+
+        search_method = 'forward'
+        prompt_length = best_prompt_ids.shape[0] #CHECK 
+
+        # compute prompted logits
+        input_ids = torch.cat([best_prompt_ids.unsqueeze(0), question_ids], dim=-1)
+        with torch.no_grad():
+            logits = model(input_ids).logits
+
+        prompted_loss = torch.nn.functional.cross_entropy(logits[:, -1, :], torch.tensor([_answer_ids]).to(model.device)).item()
+        base_correct = False
+        prompt_correct = True
+        question_length = question_ids.shape[1]
+
+
+        new_row = { 'question': question, #str
+                    'question_ids': question_ids[0].tolist(), # 1-dim list
+                    'answer': _answer,
+                    'answer_ids': _answer_ids, # int'
+                    'best_prompt': best_prompt, 
+                    'best_prompt_ids': best_prompt_ids.tolist(),
+                    'base_loss': base_loss, # float
+                    'search_method': search_method, # str
+                    'prompt_length': prompt_length, # int
+                    'prompted_loss': prompted_loss, #float
+                    'base_correct': base_correct, # bool, false
+                    'prompt_correct': prompt_correct, # bool, true
+                    'question_length': question_length
+                    }
+        # pdb.set_trace()
+        print("Comparing new_row's dtypes with reachable df: ")
+        new_df = pd.DataFrame([new_row])
+        # for key in new_row.keys(): 
+        #     print("")
+        #     print(f"{key}: {type(new_row[key])} vs. {type(reachable_df[key].iloc[0])}")
+        #     print(f"{key}: {type(new_row[key])} vs. {type(reachable_df[key].dtype)}")
+        #     print(f"{key}: {new_row[key]} vs. {reachable_df[key].tolist()[0]}")
+
+        # add the new row to reachable_df
+
+        reachable_df_ = pd.concat([reachable_df, new_df], ignore_index=True)
+        reachable_df = reachable_df_
+
+        # add the new answer_ids to R_t
+        R_t.add(_answer_ids)
+    
+    return reachable_df
+
+
+
+
+
+
+def get_reachable_set(x_0, model, tokenizer, max_prompt_tokens=10, max_parallel=300):
     """ Given a single state x_0, generate the reachable set of y* values by 
     enumerating all possible prompts u of length less than max_prompt_tokens. 
     """
@@ -84,6 +183,8 @@ def get_reachable_set(x_0, model, tokenizer, max_prompt_tokens=10):
                                          'question_ids', #
                                          'answer', #
                                          'answer_ids', #
+                                         'best_prompt', 
+                                         'best_prompt_ids', 
                                          'base_loss', #
                                          'search_method', #
                                          'prompt_length', # 
@@ -99,63 +200,50 @@ def get_reachable_set(x_0, model, tokenizer, max_prompt_tokens=10):
 
     base_answer_ids = base_logits[0,-1,:].argmax().item()
     base_answer = tokenizer.decode(base_answer_ids) # str
+    base_loss = torch.nn.functional.cross_entropy(base_logits[:, -1, :], torch.tensor([base_answer_ids]).to(model.device)).item() 
 
     question = tokenizer.batch_decode(x_0)[0] # 
-    for i in tqdm(range(tokenizer.vocab_size)): 
-        prompt_ids = torch.tensor([[i]]).to(model.device)
-        answer = tokenizer.batch_decode(prompt_ids)[0] # str
 
-        input_ids = torch.cat([prompt_ids, x_0], dim=-1)
+    # let's add the first row to the dataframe 
+    new_row =  {'question': question, #str
+                'question_ids': x_0[0].tolist(), # 1-dim list
+                'answer': base_answer, # str
+                'answer_ids': base_answer_ids, # int
+                'best_prompt': '', 
+                'best_prompt_ids': [-1], 
+                'base_loss': base_loss, # float
+                'search_method': 'forward', # str
+                'prompt_length': 0, # int
+                'prompted_loss': 0.0, #float
+                'base_correct': True, # bool, false
+                'prompt_correct': True, # bool, true
+                'question_length': x_0.shape[1]}
+    reachable_df = pd.concat([reachable_df, pd.DataFrame([new_row])], ignore_index=True)
 
-        # get the logits out of the model 
-        with torch.no_grad():
-            logits = model(input_ids).logits
+    # 1: get the prompt_ids 
+    # prompt_ids will have shape [vocab_size, 1].
+    prompt_ids = _get_prompt_ids_brute_force(tokenizer).to(model.device)
+    x_0 = x_0.to(model.device)
 
-        answer_logits = logits[:, -1, :] # [1, vocab_size] tensor
-        answer_ids = answer_logits.argmax().item() # int
-        answer = tokenizer.decode(answer_ids) # str
+    # 2: get the answer_ids for each prompt_ids
+    # answer_ids will have shape [batch, 1]. 
+    print("Computing answer_ids for each prompt_ids...")
+    answer_ids = _batch_get_answer_ids(prompt_ids, x_0, model, tokenizer, max_parallel=max_parallel)
+    print("Done.\n")
 
-        # if this answer_ids is new, add it to reachable_df. If not, we continue. 
-        if answer_ids in reachable_df['answer_ids'].tolist():
-            continue
-        else: 
-            print(f"\t[{i}] Found u that yields new y* = ", answer)
-        
 
-        # Compute the base loss on `answer_ids` with `bbase_logits`
-        base_loss = torch.nn.functional.cross_entropy(base_logits[:, -1, :], torch.tensor([answer_ids]).to(model.device)).item()
-
-        # Compute the prompted loss on `answer_ids` with `logits`
-        prompted_loss = torch.nn.functional.cross_entropy(logits[:, -1, :], torch.tensor([answer_ids]).to(model.device)).item()
-
-        # check if base correct is true 
-        base_correct = base_answer_ids == answer_ids
-
-        prompt_correct=True # true by construction
-
-        question_length = x_0.shape[1] # [1, num_toks]
-
-        new_row =  {'question': question, #str
-                    'question_ids': x_0[0].tolist(), # 1-dim list
-                    'answer': answer, # str
-                    'answer_ids': answer_ids, # int
-                    'base_loss': base_loss, # float
-                    'search_method': 'forward', # str
-                    'prompt_length': 1, # int
-                    'prompted_loss': prompted_loss, #float
-                    'base_correct': base_correct, # bool, false
-                    'prompt_correct': prompt_correct, # bool, true
-                    'question_length': question_length}
-
-        if len(reachable_df) == 0: 
-            reachable_df = pd.DataFrame([new_row])
-        else: 
-            reachable_df = pd.concat([reachable_df, pd.DataFrame([new_row])], ignore_index=True)
-
+    # 3: ingest the answer_ids into reachable_df -- only add if `answer_ids` has 
+    # not been seen before. 
+    reachable_df = _naive_ingest(model, tokenizer, reachable_df, 
+                                 prompt_ids, answer_ids, base_logits, 
+                                 x_0, question)
     return reachable_df
 
 
-def forward_generate(unique_states, model, tokenizer, max_prompt_tokens=10):
+
+def forward_generate(unique_states, model, tokenizer, 
+                     max_prompt_tokens=10, 
+                     max_parallel=300):
     """ Given a list of unique states x_0, generate the reachable set of y* values 
     for each x_0. 
     Args:
@@ -191,7 +279,9 @@ def forward_generate(unique_states, model, tokenizer, max_prompt_tokens=10):
         print(f"{i+1}/{len(unique_states)}: {row['question']}")
 
         # get the reachable set for this x_0
-        new_reachable_set = get_reachable_set(x_0, model, tokenizer, max_prompt_tokens)
+        new_reachable_set = get_reachable_set(x_0, model, tokenizer, 
+                                              max_prompt_tokens=max_prompt_tokens, 
+                                              max_parallel=max_parallel)
 
         # add the reachable set to reachable_df
         # df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)

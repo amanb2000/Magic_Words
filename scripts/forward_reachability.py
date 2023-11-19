@@ -39,6 +39,8 @@ def parse_args():
     # Arguments for how we perform our search
     parser.add_argument('--max_prompt_tokens', type=int, default=10,
                         help='Maximum number of tokens allowed in the prompt.')
+    parser.add_argument('--max_parallel', type=int, default=300,
+                        help='Maximum number of parallel searches to perform. Default=300')
 
     # Worker numbering
     parser.add_argument('--num_workers', type=int, default=1, help='Number of workers to use for skipping rows. Default=1')
@@ -96,7 +98,9 @@ def main():
 
 
     print(f"\nGenerating reachable set...")
-    reachable_df = forward_generate(unique_states, model, tokenizer, args.max_prompt_tokens)
+    reachable_df = forward_generate(unique_states, model, tokenizer, 
+                                    max_prompt_tokens = args.max_prompt_tokens,
+                                    max_parallel = args.max_parallel)
     print("Done.")
 
     # save the reachable set
