@@ -20,7 +20,8 @@ def _naive_ingest(model, tokenizer,
                   answer_ids: torch.Tensor, 
                   base_logits: torch.Tensor, 
                   question_ids: torch.Tensor, 
-                  question: str): 
+                  question: str, 
+                  eps_e: float = 0.0): 
     """ Adds rows to `reachable_df` from `prompt_ids` if the corresponding 
     `answer_ids` is novel (i.e., not contained in `reachable_df`). 
 
@@ -45,7 +46,9 @@ def _naive_ingest(model, tokenizer,
 
     for i in tqdm(range(batch)): 
         # Let's check of answer_ids[i] is in R_t. If so, we continue. 
-        if answer_ids[i].item() in R_t:
+        # generate a random number between 0 and 1
+        # if it's less than eps_e, then we continue.
+        if answer_ids[i].item() in R_t and np.random.rand() > eps_e:
             continue
 
         print("\tNew answer: ", tokenizer.decode(answer_ids[i].item()))

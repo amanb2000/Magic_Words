@@ -147,7 +147,9 @@ def get_reachable_gcg_set(x_0, model, tokenizer,
                           num_prompt_tokens=10, 
                           batch_size=768, 
                           num_iters=34,
-                          max_parallel=300): 
+                          max_parallel=300, 
+                          num_init_prompts = 1, 
+                          num_to_mutate = 1): 
     """ Performs forward-GCG to find k reachable tokens from x_0.
 
     Args: 
@@ -160,6 +162,9 @@ def get_reachable_gcg_set(x_0, model, tokenizer,
         batch_size: Batch size of alternate prompts we test each generation (sampled from top k swaps). 
         num_iters: Number of iterations to run GCG for. 
         max_parallel: Maximum number of parallel inference calls to perform.
+        num_init_prompts: Number of initial random prompts to use for GCG.
+        num_to_mutate: Number of prompts to mutate at each iteration (each gets 
+        `batch_size` mutants).
     """
     x_0 = torch.tensor([x_0], dtype=torch.long).to(model.device)
     # x_0 must have shape [1, num_question_tokens]
@@ -174,30 +179,42 @@ def get_reachable_gcg_set(x_0, model, tokenizer,
         base_logits = model(x_0).logits
 
     # add a random starting row to the reachable set
-    new_row, base_logits, question = get_random_row(x_0, model, tokenizer, base_logits)
+    print("Populating initial random prompts...")
+    reachable_df = -1
+    for i in tqdm(range(num_init_prompts)):
+        new_row, base_logits, question = get_random_row(x_0, model, tokenizer, base_logits)
+        if not (type(reachable_df) == pd.DataFrame): 
+            reachable_df = pd.DataFrame([new_row])
+        else:
+            reachable_df = pd.concat([reachable_df, pd.DataFrame([new_row])], ignore_index=True)
+    print("Done. Length of ")
 
 
     # initialize the reachable set
-    reachable_df = pd.DataFrame([new_row])
     R_t = set(reachable_df['answer_ids'].tolist())
     for iter in range(num_iters): 
         # get the starting prompt from reachable_df we are going to mutate 
         # use random uniform selection -- type list[int]
-        start_prompt = reachable_df.sample(1, replace=True, random_state=iter)['best_prompt_ids'].tolist()[0]
-        start_prompt = torch.tensor([start_prompt], dtype=torch.long).to(model.device)
+        alt_prompt_ids_list = []
+        for i in range(num_to_mutate):
+            start_prompt = reachable_df.sample(1, replace=True, random_state=iter)['best_prompt_ids'].tolist()[0]
+            start_prompt = torch.tensor([start_prompt], dtype=torch.long).to(model.device)
 
-        # get the top k token swaps for this prompt
-        grads, loss = get_prompt_divergence_grads(model, tokenizer, start_prompt, x_0, R_t)
+            # get the top k token swaps for this prompt
+            grads, loss = get_prompt_divergence_grads(model, tokenizer, start_prompt, x_0, R_t)
 
-        # get the top k token swaps for this prompt
-        assert grads.shape == (1, start_prompt.shape[1], tokenizer.vocab_size)
+            # get the top k token swaps for this prompt
+            assert grads.shape == (1, start_prompt.shape[1], tokenizer.vocab_size)
 
-        # Now we get the top_k most promising swaps for each token. 
-        # X[i,:] holds the k most promising token swaps for token i 
-        # of the prompt
-        X = (-grads).topk(top_k, dim=-1).indices # [1, num_prompt_tokens, top_k]
+            # Now we get the top_k most promising swaps for each token. 
+            # X[i,:] holds the k most promising token swaps for token i 
+            # of the prompt
+            X = (-grads).topk(top_k, dim=-1).indices # [1, num_prompt_tokens, top_k]
 
-        alt_prompt_ids = get_alt_prompt_ids(start_prompt, X, batch_size)
+            alt_prompt_ids = get_alt_prompt_ids(start_prompt, X, batch_size)
+            alt_prompt_ids_list.append(alt_prompt_ids) # [batch, num_prompt_tokens]
+
+        alt_prompt_ids = torch.cat(alt_prompt_ids_list, dim=0) # [num_to_mutate * batch_size, num_prompt_tokens]
 
         # Now we compute the answer_ids for each of these alternate prompts
         # and add them to the reachable set if they are not already in it.

@@ -51,6 +51,11 @@ def parse_args():
                         help='Number of iterations to run GCG for. Default=34')
     parser.add_argument('--batch_size', type=int, default=768,
                         help='Batch size of alternate prompts we test each generation (sampled from top k swaps). Default=768')
+    parser.add_argument('--num_init_prompts', type=int, default=1, 
+                        help='Number of initial random prompts to use for GCG. Default=1')
+    parser.add_argument('--num_to_mutate', type=int, default=1,
+                        help='Number of prompts to mutate at each iteration (each gets `batch_size` mutants). Default=1')
+
 
 
     # Worker numbering
@@ -115,7 +120,9 @@ def main():
                                     gcg=args.gcg, 
                                     top_k = args.top_k,
                                     num_iters = args.num_iters,
-                                    batch_size = args.batch_size,)
+                                    batch_size = args.batch_size,
+                                    num_init_prompts = args.num_init_prompts, 
+                                    num_to_mutate = args.num_to_mutate)
     print("Done.")
 
     # save the reachable set

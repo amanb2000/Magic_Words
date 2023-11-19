@@ -111,7 +111,9 @@ def forward_generate(unique_states, model, tokenizer,
                      gcg=False, 
                      top_k=128,
                      batch_size=768,
-                     num_iters=34):
+                     num_iters=34, 
+                     num_init_prompts=100, 
+                     num_to_mutate=1):
     """ Given a list of unique states x_0, generate the reachable set of y* values 
     for each x_0. 
     Args:
@@ -155,7 +157,9 @@ def forward_generate(unique_states, model, tokenizer,
                                                       num_prompt_tokens=max_prompt_tokens, 
                                                       batch_size=batch_size, 
                                                       num_iters=num_iters,
-                                                      max_parallel=max_parallel)
+                                                      max_parallel=max_parallel, 
+                                                      num_init_prompts=num_init_prompts, 
+                                                      num_to_mutate=num_to_mutate)
         else:
             new_reachable_set = get_reachable_set(x_0, model, tokenizer, 
                                                 max_prompt_tokens=max_prompt_tokens, 
