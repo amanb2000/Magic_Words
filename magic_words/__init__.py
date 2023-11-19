@@ -15,3 +15,6 @@ from magic_words.easy_gcg import easy_gcg_qa, easy_gcg_qa_ids
 
 # Forward Generation 
 from magic_words.forward_reach import get_reachable_set, forward_generate
+
+# Answer checking 
+from magic_words.get_answer import _get_answer_ids, _batch_get_answer_ids

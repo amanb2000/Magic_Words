@@ -190,6 +190,21 @@ def get_alt_prompt_ids(prompt_ids,
     return alt_ids
 
 
+def get_embedding_weights(model):
+    """ Returns the embedding weights for the model. """
+    if str(type(model)).startswith("<class 'transformers_modules.tiiuae.falcon"):
+        embed_weights = model.transformer.word_embeddings.weight # [vocab, hidden_size]
+    elif str(type(model)).startswith("<class 'transformers.models.gpt2"):
+        embed_weights = model.transformer.wte.weight # [vocab, hidden_size]
+    elif str(type(model)).startswith("<class 'transformers.models.llama.modeling_llama.LlamaForCausalLM"): 
+        embed_weights = model.model.embed_tokens.weight
+    else: 
+        # Exception: we don't know how to get the embedding weights for this model
+        print(model)
+        raise Exception(f"Unknown model type: {type(model)}")
+
+    return embed_weights
+
 def get_prompt_grads(model, 
                      prompt_ids, 
                      question_ids, 
@@ -204,17 +219,7 @@ def get_prompt_grads(model,
     """
     model.zero_grad()
 
-    # Getting the embedding weights -- depends on the model type
-    if str(type(model)).startswith("<class 'transformers_modules.tiiuae.falcon"):
-        embed_weights = model.transformer.word_embeddings.weight # [vocab, hidden_size]
-    elif str(type(model)).startswith("<class 'transformers.models.gpt2"):
-        embed_weights = model.transformer.wte.weight # [vocab, hidden_size]
-    elif str(type(model)).startswith("<class 'transformers.models.llama.modeling_llama.LlamaForCausalLM"): 
-        embed_weights = model.model.embed_tokens.weight
-    else: 
-        # Exception: we don't know how to get the embedding weights for this model
-        print(model)
-        raise Exception(f"Unknown model type: {type(model)}")
+    embed_weights = get_embedding_weights(model) # [vocab, hidden_size]
 
     # get the one-hot prompt_ids, compute the embeddings
     one_hot_prompt_ids = torch.nn.functional.one_hot(prompt_ids, num_classes=embed_weights.shape[0]).to(model.dtype) # [batch, seq_len, vocab]

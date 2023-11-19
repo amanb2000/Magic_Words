@@ -41,6 +41,17 @@ def parse_args():
                         help='Maximum number of tokens allowed in the prompt.')
     parser.add_argument('--max_parallel', type=int, default=300,
                         help='Maximum number of parallel searches to perform. Default=300')
+    
+    # GCG arguments
+    parser.add_argument('--gcg', action='store_true', default=False,
+                        help='Whether to use GCG or not. Default=False')
+    parser.add_argument('--top_k', type=int, default=128,
+                        help='Number of top token swaps to explore at each iteration. Default=5')
+    parser.add_argument('--num_iters', type=int, default=34,
+                        help='Number of iterations to run GCG for. Default=34')
+    parser.add_argument('--batch_size', type=int, default=768,
+                        help='Batch size of alternate prompts we test each generation (sampled from top k swaps). Default=768')
+
 
     # Worker numbering
     parser.add_argument('--num_workers', type=int, default=1, help='Number of workers to use for skipping rows. Default=1')
@@ -100,7 +111,11 @@ def main():
     print(f"\nGenerating reachable set...")
     reachable_df = forward_generate(unique_states, model, tokenizer, 
                                     max_prompt_tokens = args.max_prompt_tokens,
-                                    max_parallel = args.max_parallel)
+                                    max_parallel = args.max_parallel, 
+                                    gcg=args.gcg, 
+                                    top_k = args.top_k,
+                                    num_iters = args.num_iters,
+                                    batch_size = args.batch_size,)
     print("Done.")
 
     # save the reachable set

@@ -10,6 +10,8 @@ import torch
 import transformers 
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
+from magic_words.forward_gcg import get_reachable_gcg_set
+from magic_words.get_answer import _get_answer_ids, _batch_get_answer_ids
 
 
 def _get_prompt_ids_brute_force(tokenizer): 
@@ -20,58 +22,7 @@ def _get_prompt_ids_brute_force(tokenizer):
     return prompt_ids
 
 
-def _get_answer_ids(prompt_ids, question_ids, model, tokenizer): 
-    """ Runs `[prompt_ids + question_ids]` through the model to get logits, then 
-    takes the argmax over the vocab_size dimension to return the set of 
-    `answer_ids` as a [batch, 1] tensor. 
 
-    `prompt_ids` has shape [batch, prompt_length]
-    `question_ids` has shape [batch, question_length]
-    """
-    if question_ids.shape[0] == 1 and prompt_ids.shape[0] > 1:
-        question_ids = question_ids.repeat(prompt_ids.shape[0], 1)
-
-    assert prompt_ids.shape[0] == question_ids.shape[0], 'Batch dimension of prompt_ids and question_ids must match in _get_answer_ids()'
-
-    # Compute the logits 
-    input_ids = torch.cat([prompt_ids, question_ids], dim=-1).to(model.device)
-    with torch.no_grad():
-        logits = model(input_ids).logits
-    
-    # Compute the answer_ids
-    answer_ids = logits[:, -1, :].argmax(dim=-1).unsqueeze(-1)
-
-    # ensure answer_ids has the right dimensions 
-    assert answer_ids.shape == (prompt_ids.shape[0], 1), f"answer_ids has shape {answer_ids.shape} but should have shape {(prompt_ids.shape[0], 1)}"
-
-    return answer_ids
-
-def _batch_get_answer_ids(prompt_ids, question_ids, model, tokenizer, max_parallel=300): 
-    """ Calls `_get_answer_ids()` in batches of size `max_parallel`. 
-    """
-    batch = prompt_ids.shape[0]
-
-    # get the number of batches we need 
-    num_batches = math.ceil(batch / max_parallel)
-
-    # initialize the answer_ids tensor 
-    answer_ids = torch.zeros(batch, 1, dtype=torch.long).to(model.device)
-
-    # loop through each batch
-    for i in tqdm(range(num_batches)): 
-        # get the batch of prompt_ids and question_ids
-        batch_start = i*max_parallel
-        batch_end = min((i+1)*max_parallel, batch)
-
-        prompt_ids_batch = prompt_ids[batch_start:batch_end]
-
-        # get the answer_ids for this batch
-        answer_ids_batch = _get_answer_ids(prompt_ids_batch, question_ids, model, tokenizer)
-
-        # add the answer_ids_batch to answer_ids
-        answer_ids[batch_start:batch_end] = answer_ids_batch
-
-    return answer_ids
 
 def _naive_ingest(model, tokenizer, 
                   reachable_df: pd.DataFrame, 
@@ -169,30 +120,10 @@ def _naive_ingest(model, tokenizer,
     return reachable_df
 
 
-
-
-
-
-def get_reachable_set(x_0, model, tokenizer, max_prompt_tokens=10, max_parallel=300):
-    """ Given a single state x_0, generate the reachable set of y* values by 
-    enumerating all possible prompts u of length less than max_prompt_tokens. 
+def get_base_row(x_0, model, tokenizer): 
+    """ Gets the base row for the reachable set. 
+    I.e., the row corresponding to null control input `u`.
     """
-    assert max_prompt_tokens == 1, "`get_reachable_set()` Not implemented with max_prompt_tokens != 1"
-
-    reachable_df = pd.DataFrame(columns=['question', #
-                                         'question_ids', #
-                                         'answer', #
-                                         'answer_ids', #
-                                         'best_prompt', 
-                                         'best_prompt_ids', 
-                                         'base_loss', #
-                                         'search_method', #
-                                         'prompt_length', # 
-                                         'prompted_loss', #
-                                         'base_correct', #
-                                         'prompt_correct', 
-                                         'question_length'])
-
     # get the base logits 
     x_0 = torch.tensor(x_0).unsqueeze(0).to(model.device)
     with torch.no_grad():
@@ -218,6 +149,31 @@ def get_reachable_set(x_0, model, tokenizer, max_prompt_tokens=10, max_parallel=
                 'base_correct': True, # bool, false
                 'prompt_correct': True, # bool, true
                 'question_length': x_0.shape[1]}
+    return new_row, base_logits, question
+
+
+def get_reachable_set(x_0, model, tokenizer, max_prompt_tokens=10, max_parallel=300):
+    """ Given a single state x_0, generate the reachable set of y* values by 
+    enumerating all possible prompts u of length less than max_prompt_tokens. 
+    """
+    assert max_prompt_tokens == 1, "`get_reachable_set()` Not implemented with max_prompt_tokens != 1"
+
+    reachable_df = pd.DataFrame(columns=['question', #
+                                         'question_ids', #
+                                         'answer', #
+                                         'answer_ids', #
+                                         'best_prompt', 
+                                         'best_prompt_ids', 
+                                         'base_loss', #
+                                         'search_method', #
+                                         'prompt_length', # 
+                                         'prompted_loss', #
+                                         'base_correct', #
+                                         'prompt_correct', 
+                                         'question_length'])
+
+    new_row, base_logits, question = get_base_row(x_0, model, tokenizer) 
+
     reachable_df = pd.concat([reachable_df, pd.DataFrame([new_row])], ignore_index=True)
 
     # 1: get the prompt_ids 
@@ -243,7 +199,11 @@ def get_reachable_set(x_0, model, tokenizer, max_prompt_tokens=10, max_parallel=
 
 def forward_generate(unique_states, model, tokenizer, 
                      max_prompt_tokens=10, 
-                     max_parallel=300):
+                     max_parallel=300, 
+                     gcg=False, 
+                     top_k=128,
+                     batch_size=768,
+                     num_iters=34):
     """ Given a list of unique states x_0, generate the reachable set of y* values 
     for each x_0. 
     Args:
@@ -261,6 +221,8 @@ def forward_generate(unique_states, model, tokenizer,
                                          'question_ids', 
                                          'answer',
                                          'answer_ids',
+                                         'best_prompt',
+                                         'best_prompt_ids',
                                          'base_loss', 
                                          'search_method', 
                                          'prompt_length', 
@@ -279,13 +241,20 @@ def forward_generate(unique_states, model, tokenizer,
         print(f"{i+1}/{len(unique_states)}: {row['question']}")
 
         # get the reachable set for this x_0
-        new_reachable_set = get_reachable_set(x_0, model, tokenizer, 
-                                              max_prompt_tokens=max_prompt_tokens, 
-                                              max_parallel=max_parallel)
+        if gcg: 
+            new_reachable_set = get_reachable_gcg_set(x_0, model, tokenizer, 
+                                                      top_k=top_k,
+                                                      num_prompt_tokens=max_prompt_tokens, 
+                                                      batch_size=batch_size, 
+                                                      num_iters=num_iters,
+                                                      max_parallel=max_parallel)
+        else:
+            new_reachable_set = get_reachable_set(x_0, model, tokenizer, 
+                                                max_prompt_tokens=max_prompt_tokens, 
+                                                max_parallel=max_parallel)
 
         # add the reachable set to reachable_df
         # df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-
         reachable_df = pd.concat([reachable_df, new_reachable_set], ignore_index=True)
 
     return reachable_df
