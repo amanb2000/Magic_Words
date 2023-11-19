@@ -11,6 +11,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 
 from magic_words.forward_reach import _get_prompt_ids_brute_force
 from magic_words.forward_reach import _get_answer_ids
+from magic_words.forward_reach import _batch_get_answer_ids
 
 
 class TestForwardReach(unittest.TestCase): 
@@ -73,4 +74,30 @@ class TestForwardReach(unittest.TestCase):
         answer_ids = _get_answer_ids(prompt_ids, question_ids, self.model, self.tokenizer)
 
         print("Answer_ids shape: ", answer_ids.shape)
-        print("Answer_ids: ", answer_ids)
+        # print("Answer_ids: ", answer_ids)
+
+    def test_batch_get_answer(self):
+        question = "What is the meaning of life?"
+        question_ids = self.tokenizer(question, return_tensors="pt")["input_ids"]
+
+        prompt_ids = _get_prompt_ids_brute_force(self.tokenizer)
+
+        # select the first 300
+        prompt_ids = prompt_ids[:300, :]
+        max_parallel = 100
+
+        answer_ids_batch = _batch_get_answer_ids(prompt_ids, question_ids, 
+                                           self.model, 
+                                           self.tokenizer, 
+                                           max_parallel=max_parallel)
+        
+        # now make sure they're the same as before 
+        answer_ids = _get_answer_ids(prompt_ids, question_ids, self.model, self.tokenizer)
+
+        print("Answer_ids_batch shape: ", answer_ids_batch.shape)
+        print("Answer_ids_batch: ", answer_ids_batch)
+
+        # torch allclose 
+        self.assertTrue(torch.allclose(answer_ids, answer_ids_batch, atol=1e-5))
+        print("Passed allclose!")
+
