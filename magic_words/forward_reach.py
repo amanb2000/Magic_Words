@@ -9,6 +9,16 @@ import torch
 import transformers 
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
+
+
+def _get_prompt_ids_brute_force(tokenizer): 
+    """ Gets a tensor of shape `[vocab_size, 1]` with all token ids 
+    for the model. 
+    """
+    prompt_ids = torch.tensor(range(tokenizer.vocab_size)).unsqueeze(-1)
+    return prompt_ids
+
+
 def get_reachable_set(x_0, model, tokenizer, max_prompt_tokens=10):
     """ Given a single state x_0, generate the reachable set of y* values by 
     enumerating all possible prompts u of length less than max_prompt_tokens. 
