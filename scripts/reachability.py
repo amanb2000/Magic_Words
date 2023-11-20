@@ -96,7 +96,7 @@ def load_model(model_name):
         model = pipeline.model
         model.eval()
         print("Done loading model and tokenizer!\n")
-    elif args.model == 'falcon-40b':
+    elif model_name == 'falcon-40b':
         model_name = "tiiuae/falcon-40b"
         print(f"Loading model `{model_name}`...")
         tokenizer = AutoTokenizer.from_pretrained(model_name, padding_side="left")
@@ -112,7 +112,7 @@ def load_model(model_name):
         model = pipeline.model
         model.eval()
         print("Done loading model and tokenizer!\n")
-    elif args.model == 'llama-7b': 
+    elif model_name == 'llama-7b': 
         model_name = "huggyllama/llama-7b"
         print(f"Loading model {model_name}...")
         tokenizer = AutoTokenizer.from_pretrained(model_name, 
@@ -124,7 +124,7 @@ def load_model(model_name):
         model = model.half() # convert to fp16 for fast inference.
         model.eval()
         print("Done loading model and tokenizer!\n")
-    elif args.model == "gpt-2-small": 
+    elif model_name == "gpt-2-small": 
         model_name = "gpt2"
         print(f"Loading model {model_name}...")
         tokenizer = AutoTokenizer.from_pretrained(model_name)
