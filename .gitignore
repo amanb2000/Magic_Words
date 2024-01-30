@@ -1,10 +1,13 @@
 venv/
+env/
 *.pyc
 *.pyo
 __pycache__/
 .coverage
 *.egg-info
 ranked*.csv
+.DS_Store
+*/**/.DS_Store
 
 
 # Super large files
