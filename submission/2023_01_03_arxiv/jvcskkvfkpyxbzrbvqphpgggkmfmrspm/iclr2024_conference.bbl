@@ -1,0 +1,336 @@
+\begin{thebibliography}{46}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Almazrouei et~al.(2023)Almazrouei, Alobeidli, Alshamsi, Cappelli,
+  Cojocaru, Debbah, Goffinet, Heslow, Launay, Malartic, Noune, Pannier, and
+  Penedo]{falcon40b}
+Ebtesam Almazrouei, Hamza Alobeidli, Abdulaziz Alshamsi, Alessandro Cappelli,
+  Ruxandra Cojocaru, Merouane Debbah, Etienne Goffinet, Daniel Heslow, Julien
+  Launay, Quentin Malartic, Badreddine Noune, Baptiste Pannier, and Guilherme
+  Penedo.
+\newblock {Falcon-40B}: an open large language model with state-of-the-art
+  performance.
+\newblock 2023.
+
+\bibitem[Ani{\c{t}}a et~al.(2011)Ani{\c{t}}a, Arn{\u{a}}utu, Capasso, and
+  Capasso]{anicta2011introduction}
+Sebastian Ani{\c{t}}a, Viorel Arn{\u{a}}utu, Vincenzo Capasso, and Vincenzo
+  Capasso.
+\newblock \emph{An introduction to optimal control problems in life sciences
+  and economics: From mathematical models to numerical simulation with
+  MATLAB{\textregistered}}, volume~2.
+\newblock Springer, 2011.
+
+\bibitem[Bai et~al.(2022)Bai, Jones, Ndousse, Askell, Chen, DasSarma, Drain,
+  Fort, Ganguli, Henighan, et~al.]{rlhf_chatbot}
+Yuntao Bai, Andy Jones, Kamal Ndousse, Amanda Askell, Anna Chen, Nova DasSarma,
+  Dawn Drain, Stanislav Fort, Deep Ganguli, Tom Henighan, et~al.
+\newblock Training a helpful and harmless assistant with reinforcement learning
+  from human feedback.
+\newblock \emph{arXiv preprint arXiv:2204.05862}, 2022.
+
+\bibitem[Bricken et~al.(2023)Bricken, Templeton, Batson, Chen, Jermyn, Conerly,
+  Turner, Anil, Denison, Askell, Lasenby, Wu, Kravec, Schiefer, Maxwell,
+  Joseph, Hatfield-Dodds, Tamkin, Nguyen, McLean, Burke, Hume, Carter,
+  Henighan, and Olah]{bricken2023monosemanticity}
+Trenton Bricken, Adly Templeton, Joshua Batson, Brian Chen, Adam Jermyn, Tom
+  Conerly, Nick Turner, Cem Anil, Carson Denison, Amanda Askell, Robert
+  Lasenby, Yifan Wu, Shauna Kravec, Nicholas Schiefer, Tim Maxwell, Nicholas
+  Joseph, Zac Hatfield-Dodds, Alex Tamkin, Karina Nguyen, Brayden McLean,
+  Josiah~E Burke, Tristan Hume, Shan Carter, Tom Henighan, and Christopher
+  Olah.
+\newblock Towards monosemanticity: Decomposing language models with dictionary
+  learning.
+\newblock \emph{Transformer Circuits Thread}, 2023.
+\newblock
+  https://transformer-circuits.pub/2023/monosemantic-features/index.html.
+
+\bibitem[Brown et~al.(2020)Brown, Mann, Ryder, Subbiah, Kaplan, Dhariwal,
+  Neelakantan, Shyam, Sastry, Askell, Agarwal, Herbert-Voss, Krueger, Henighan,
+  Child, Ramesh, Ziegler, Wu, Winter, Hesse, Chen, Sigler, Litwin, Gray, Chess,
+  Clark, Berner, McCandlish, Radford, Sutskever, and Amodei]{gpt3}
+Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared~D Kaplan, Prafulla
+  Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell,
+  Sandhini Agarwal, Ariel Herbert-Voss, Gretchen Krueger, Tom Henighan, Rewon
+  Child, Aditya Ramesh, Daniel Ziegler, Jeffrey Wu, Clemens Winter, Chris
+  Hesse, Mark Chen, Eric Sigler, Mateusz Litwin, Scott Gray, Benjamin Chess,
+  Jack Clark, Christopher Berner, Sam McCandlish, Alec Radford, Ilya Sutskever,
+  and Dario Amodei.
+\newblock Language models are few-shot learners.
+\newblock In H.~Larochelle, M.~Ranzato, R.~Hadsell, M.F. Balcan, and H.~Lin
+  (eds.), \emph{Advances in Neural Information Processing Systems}, volume~33,
+  pp.\  1877--1901. Curran Associates, Inc., 2020.
+\newblock URL
+  \url{https://proceedings.neurips.cc/paper_files/paper/2020/file/1457c0d6bfcb4967418bfb8ac142f64a-Paper.pdf}.
+
+\bibitem[Bubeck et~al.(2023)Bubeck, Chandrasekaran, Eldan, Gehrke, Horvitz,
+  Kamar, Lee, Lee, Li, Lundberg, Nori, Palangi, Ribeiro, and
+  Zhang]{bubeck2023sparks}
+Sébastien Bubeck, Varun Chandrasekaran, Ronen Eldan, Johannes Gehrke, Eric
+  Horvitz, Ece Kamar, Peter Lee, Yin~Tat Lee, Yuanzhi Li, Scott Lundberg,
+  Harsha Nori, Hamid Palangi, Marco~Tulio Ribeiro, and Yi~Zhang.
+\newblock Sparks of artificial general intelligence: Early experiments with
+  gpt-4, 2023.
+
+\bibitem[Calafiore \& El~Ghaoui(2014)Calafiore and
+  El~Ghaoui]{367_optimization_models}
+Giuseppe~C Calafiore and Laurent El~Ghaoui.
+\newblock \emph{Optimization models}.
+\newblock Cambridge university press, 2014.
+
+\bibitem[Chefer et~al.(2021)Chefer, Gur, and Wolf]{chefer2021transformer}
+Hila Chefer, Shir Gur, and Lior Wolf.
+\newblock Transformer interpretability beyond attention visualization, 2021.
+
+\bibitem[Conmy et~al.(2023)Conmy, Mavor-Parker, Lynch, Heimersheim, and
+  Garriga-Alonso]{conmy2023automated}
+Arthur Conmy, Augustine~N. Mavor-Parker, Aengus Lynch, Stefan Heimersheim, and
+  Adrià Garriga-Alonso.
+\newblock Towards automated circuit discovery for mechanistic interpretability,
+  2023.
+
+\bibitem[Goodfellow et~al.(2015)Goodfellow, Shlens, and
+  Szegedy]{goodfellow2015explaining}
+Ian~J. Goodfellow, Jonathon Shlens, and Christian Szegedy.
+\newblock Explaining and harnessing adversarial examples, 2015.
+
+\bibitem[Guo et~al.(2021)Guo, Sablayrolles, Jégou, and
+  Kiela]{guo2021gradientbased}
+Chuan Guo, Alexandre Sablayrolles, Hervé Jégou, and Douwe Kiela.
+\newblock Gradient-based adversarial attacks against text transformers, 2021.
+
+\bibitem[Hagendorff(2023)]{hagendorff2023machine}
+Thilo Hagendorff.
+\newblock Machine psychology: Investigating emergent capabilities and behavior
+  in large language models using psychological methods, 2023.
+
+\bibitem[Jiang et~al.(2020)Jiang, Xu, Araki, and Neubig]{jiang2020know}
+Zhengbao Jiang, Frank~F. Xu, Jun Araki, and Graham Neubig.
+\newblock How can we know what language models know?, 2020.
+
+\bibitem[Kalman et~al.(1969)Kalman, Falb, and Arbib]{kalman1969topics}
+Rudolf~Emil Kalman, Peter~L Falb, and Michael~A Arbib.
+\newblock \emph{Topics in mathematical system theory}, volume~33.
+\newblock McGraw-Hill New York, 1969.
+
+\bibitem[Lewis et~al.(2020)Lewis, Perez, Piktus, Petroni, Karpukhin, Goyal,
+  K{\"u}ttler, Lewis, Yih, Rockt{\"a}schel, et~al.]{lewis2020retrieval}
+Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir
+  Karpukhin, Naman Goyal, Heinrich K{\"u}ttler, Mike Lewis, Wen-tau Yih, Tim
+  Rockt{\"a}schel, et~al.
+\newblock Retrieval-augmented generation for knowledge-intensive nlp tasks.
+\newblock \emph{Advances in Neural Information Processing Systems},
+  33:\penalty0 9459--9474, 2020.
+
+\bibitem[Lian et~al.(2002)Lian, Moyne, and Tilbury]{lian2002network}
+Feng-Li Lian, James Moyne, and Dawn Tilbury.
+\newblock Network design consideration for distributed control systems.
+\newblock \emph{IEEE transactions on control systems technology}, 10\penalty0
+  (2):\penalty0 297--307, 2002.
+
+\bibitem[Merity et~al.(2016)Merity, Xiong, Bradbury, and Socher]{wikitext}
+Stephen Merity, Caiming Xiong, James Bradbury, and Richard Socher.
+\newblock Pointer sentinel mixture models, 2016.
+
+\bibitem[Min et~al.(2023)Min, Ross, Sulem, Veyseh, Nguyen, Sainz, Agirre,
+  Heintz, and Roth]{min2023recent}
+Bonan Min, Hayley Ross, Elior Sulem, Amir Pouran~Ben Veyseh, Thien~Huu Nguyen,
+  Oscar Sainz, Eneko Agirre, Ilana Heintz, and Dan Roth.
+\newblock Recent advances in natural language processing via large pre-trained
+  language models: A survey.
+\newblock \emph{ACM Computing Surveys}, 56\penalty0 (2):\penalty0 1--40, 2023.
+
+\bibitem[Noever \& McKee(2023)Noever and McKee]{noever2023numeracy}
+David Noever and Forrest McKee.
+\newblock Numeracy from literacy: Data science as an emergent skill from large
+  language models, 2023.
+
+\bibitem[Ogata(2010)]{ogata2010modern}
+Katsuhiko Ogata.
+\newblock \emph{Modern control engineering fifth edition}.
+\newblock 2010.
+
+\bibitem[OpenAI(2022)]{GPT3_5_blog}
+OpenAI, Nov 2022.
+\newblock URL \url{https://openai.com/blog/chatgpt}.
+
+\bibitem[OpenAI(2023)]{openai2023gpt4}
+OpenAI.
+\newblock Gpt-4 technical report, 2023.
+
+\bibitem[Patil et~al.(2023)Patil, Zhang, Wang, and Gonzalez]{patil2023gorilla}
+Shishir~G. Patil, Tianjun Zhang, Xin Wang, and Joseph~E. Gonzalez.
+\newblock Gorilla: Large language model connected with massive apis, 2023.
+
+\bibitem[Petroni et~al.(2019)Petroni, Rockt{\"{a}}schel, Lewis, Bakhtin, Wu,
+  Miller, and Riedel]{LAMA_dataset}
+Fabio Petroni, Tim Rockt{\"{a}}schel, Patrick S.~H. Lewis, Anton Bakhtin,
+  Yuxiang Wu, Alexander~H. Miller, and Sebastian Riedel.
+\newblock Language models as knowledge bases?
+\newblock \emph{CoRR}, abs/1909.01066, 2019.
+\newblock URL \url{http://arxiv.org/abs/1909.01066}.
+
+\bibitem[Radford et~al.(2019)Radford, Wu, Child, Luan, Amodei, Sutskever,
+  et~al.]{radford2019language}
+Alec Radford, Jeffrey Wu, Rewon Child, David Luan, Dario Amodei, Ilya
+  Sutskever, et~al.
+\newblock Language models are unsupervised multitask learners.
+\newblock \emph{OpenAI blog}, 1\penalty0 (8):\penalty0 9, 2019.
+
+\bibitem[Reynolds \& McDonell(2021)Reynolds and McDonell]{reynolds2021prompt}
+Laria Reynolds and Kyle McDonell.
+\newblock Prompt programming for large language models: Beyond the few-shot
+  paradigm, 2021.
+
+\bibitem[Roy et~al.(2009)Roy, Wan, and Saberi]{virus_control}
+Sandip Roy, Yan Wan, and Ali Saberi.
+\newblock A network control theory approach to virus spread mitigation.
+\newblock In \emph{2009 IEEE Conference on Technologies for Homeland Security},
+  pp.\  599--606, 2009.
+\newblock \doi{10.1109/THS.2009.5168092}.
+
+\bibitem[Rozière et~al.(2023)Rozière, Gehring, Gloeckle, Sootla, Gat, Tan,
+  Adi, Liu, Remez, Rapin, Kozhevnikov, Evtimov, Bitton, Bhatt, Ferrer,
+  Grattafiori, Xiong, Défossez, Copet, Azhar, Touvron, Martin, Usunier,
+  Scialom, and Synnaeve]{code_llama}
+Baptiste Rozière, Jonas Gehring, Fabian Gloeckle, Sten Sootla, Itai Gat,
+  Xiaoqing~Ellen Tan, Yossi Adi, Jingyu Liu, Tal Remez, Jérémy Rapin, Artyom
+  Kozhevnikov, Ivan Evtimov, Joanna Bitton, Manish Bhatt, Cristian~Canton
+  Ferrer, Aaron Grattafiori, Wenhan Xiong, Alexandre Défossez, Jade Copet,
+  Faisal Azhar, Hugo Touvron, Louis Martin, Nicolas Usunier, Thomas Scialom,
+  and Gabriel Synnaeve.
+\newblock Code llama: Open foundation models for code, 2023.
+
+\bibitem[Shi et~al.(2022)Shi, Han, Gonen, Holtzman, Tsvetkov, and
+  Zettlemoyer]{shi2022human}
+Weijia Shi, Xiaochuang Han, Hila Gonen, Ari Holtzman, Yulia Tsvetkov, and Luke
+  Zettlemoyer.
+\newblock Toward human readable prompt tuning: Kubrick's the shining is a good
+  movie, and a good prompt too?, 2022.
+
+\bibitem[Shin et~al.(2020)Shin, Razeghi, au2, Wallace, and
+  Singh]{shin2020autoprompt}
+Taylor Shin, Yasaman Razeghi, Robert L. Logan~IV au2, Eric Wallace, and Sameer
+  Singh.
+\newblock Autoprompt: Eliciting knowledge from language models with
+  automatically generated prompts, 2020.
+
+\bibitem[Sivaramakrishnan et~al.(2023)Sivaramakrishnan, Sivaramakrishnan, and
+  Oishi]{sivaramakrishnan2023stochastic}
+Karthik Sivaramakrishnan, Vignesh Sivaramakrishnan, and Meeko M.~K. Oishi.
+\newblock Stochastic reachability of discrete-time stochastic systems via
+  probability measures, 2023.
+
+\bibitem[Soatto et~al.(2023)Soatto, Tabuada, Chaudhari, and
+  Liu]{soatto2023taming}
+Stefano Soatto, Paulo Tabuada, Pratik Chaudhari, and Tian~Yu Liu.
+\newblock Taming ai bots: Controllability of neural states in large language
+  models, 2023.
+
+\bibitem[Sontag(2013)]{control_bible}
+Eduardo~D Sontag.
+\newblock \emph{Mathematical control theory: deterministic finite dimensional
+  systems}, volume~6.
+\newblock Springer Science \& Business Media, 2013.
+
+\bibitem[Taylor(1953)]{cloze_1959}
+Wilson~L. Taylor.
+\newblock “cloze procedure”: A new tool for measuring readability.
+\newblock \emph{Journalism Quarterly}, 30\penalty0 (4):\penalty0 415--433,
+  1953.
+\newblock \doi{10.1177/107769905303000401}.
+\newblock URL \url{https://doi.org/10.1177/107769905303000401}.
+
+\bibitem[Touvron et~al.(2023)Touvron, Lavril, Izacard, Martinet, Lachaux,
+  Lacroix, Rozière, Goyal, Hambro, Azhar, Rodriguez, Joulin, Grave, and
+  Lample]{llama_1}
+Hugo Touvron, Thibaut Lavril, Gautier Izacard, Xavier Martinet, Marie-Anne
+  Lachaux, Timothée Lacroix, Baptiste Rozière, Naman Goyal, Eric Hambro,
+  Faisal Azhar, Aurelien Rodriguez, Armand Joulin, Edouard Grave, and Guillaume
+  Lample.
+\newblock Llama: Open and efficient foundation language models, 2023.
+
+\bibitem[Vaswani et~al.(2017)Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez,
+  Kaiser, and Polosukhin]{vaswani2017attention}
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
+  Aidan~N Gomez, {\L}ukasz Kaiser, and Illia Polosukhin.
+\newblock Attention is all you need.
+\newblock \emph{Advances in neural information processing systems}, 30, 2017.
+
+\bibitem[Wang et~al.(2023{\natexlab{a}})Wang, Lyu, Ji, Zhang, Yu, Shi, and
+  Tu]{wang2023document}
+Longyue Wang, Chenyang Lyu, Tianbo Ji, Zhirui Zhang, Dian Yu, Shuming Shi, and
+  Zhaopeng Tu.
+\newblock Document-level machine translation with large language models.
+\newblock \emph{arXiv preprint arXiv:2304.02210}, 2023{\natexlab{a}}.
+
+\bibitem[Wang et~al.(2023{\natexlab{b}})Wang, Xie, Ding, Feng, and
+  Xia]{wang2023chatgpt}
+Zengzhi Wang, Qiming Xie, Zixiang Ding, Yi~Feng, and Rui Xia.
+\newblock Is chatgpt a good sentiment analyzer? a preliminary study.
+\newblock \emph{arXiv preprint arXiv:2304.04339}, 2023{\natexlab{b}}.
+
+\bibitem[Wei et~al.(2022)Wei, Tay, Bommasani, Raffel, Zoph, Borgeaud, Yogatama,
+  Bosma, Zhou, Metzler, Chi, Hashimoto, Vinyals, Liang, Dean, and
+  Fedus]{wei2022emergent}
+Jason Wei, Yi~Tay, Rishi Bommasani, Colin Raffel, Barret Zoph, Sebastian
+  Borgeaud, Dani Yogatama, Maarten Bosma, Denny Zhou, Donald Metzler, Ed~H.
+  Chi, Tatsunori Hashimoto, Oriol Vinyals, Percy Liang, Jeff Dean, and William
+  Fedus.
+\newblock Emergent abilities of large language models, 2022.
+
+\bibitem[Wei et~al.(2023)Wei, Wang, Schuurmans, Bosma, Ichter, Xia, Chi, Le,
+  and Zhou]{wei2023chainofthought}
+Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Brian Ichter, Fei Xia,
+  Ed~Chi, Quoc Le, and Denny Zhou.
+\newblock Chain-of-thought prompting elicits reasoning in large language
+  models, 2023.
+
+\bibitem[Wen et~al.(2023)Wen, Jain, Kirchenbauer, Goldblum, Geiping, and
+  Goldstein]{wen2023hard}
+Yuxin Wen, Neel Jain, John Kirchenbauer, Micah Goldblum, Jonas Geiping, and Tom
+  Goldstein.
+\newblock Hard prompts made easy: Gradient-based discrete optimization for
+  prompt tuning and discovery, 2023.
+
+\bibitem[Weston et~al.(2016)Weston, Bordes, Chopra, and
+  Mikolov]{babl_dataset_reasoning}
+Jason Weston, Antoine Bordes, Sumit Chopra, and Tom{\'{a}}s Mikolov.
+\newblock Towards ai-complete question answering: {A} set of prerequisite toy
+  tasks.
+\newblock In Yoshua Bengio and Yann LeCun (eds.), \emph{4th International
+  Conference on Learning Representations, {ICLR} 2016, San Juan, Puerto Rico,
+  May 2-4, 2016, Conference Track Proceedings}, 2016.
+\newblock URL \url{http://arxiv.org/abs/1502.05698}.
+
+\bibitem[Yi et~al.(2000)Yi, Huang, Simon, and Doyle]{yi2000robust}
+Tau-Mu Yi, Yun Huang, Melvin~I Simon, and John Doyle.
+\newblock Robust perfect adaptation in bacterial chemotaxis through integral
+  feedback control.
+\newblock \emph{Proceedings of the National Academy of Sciences}, 97\penalty0
+  (9):\penalty0 4649--4653, 2000.
+
+\bibitem[Zhang et~al.(2022)Zhang, Song, Li, Zhou, and
+  Song]{survey_controllable_text_gen}
+Hanqing Zhang, Haolin Song, Shaoyu Li, Ming Zhou, and Dawei Song.
+\newblock A survey of controllable text generation using transformer-based
+  pre-trained language models.
+\newblock \emph{CoRR}, abs/2201.05337, 2022.
+\newblock URL \url{https://arxiv.org/abs/2201.05337}.
+
+\bibitem[Zhou et~al.(2023)Zhou, Muresanu, Han, Paster, Pitis, Chan, and
+  Ba]{zhou2023large}
+Yongchao Zhou, Andrei~Ioan Muresanu, Ziwen Han, Keiran Paster, Silviu Pitis,
+  Harris Chan, and Jimmy Ba.
+\newblock Large language models are human-level prompt engineers, 2023.
+
+\bibitem[Zou et~al.(2023)Zou, Wang, Kolter, and Fredrikson]{zou2023universal}
+Andy Zou, Zifan Wang, J.~Zico Kolter, and Matt Fredrikson.
+\newblock Universal and transferable adversarial attacks on aligned language
+  models, 2023.
+
+\end{thebibliography}

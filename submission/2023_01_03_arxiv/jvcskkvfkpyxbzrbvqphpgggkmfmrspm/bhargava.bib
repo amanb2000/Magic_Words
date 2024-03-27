@@ -1,0 +1,2041 @@
+%%%%%%%%%%%%%%%%%%%%
+%%% REFERENCES:  %%%
+%%%%%%%%%%%%%%%%%%%%
+
+% `.bib` file by Aman Bhargava -- For ongoing use.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% CONTROL THEORY OF LLMs %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Review of transformer-based LLMs 
+@article{min2023recent,
+  title={Recent advances in natural language processing via large pre-trained language models: A survey},
+  author={Min, Bonan and Ross, Hayley and Sulem, Elior and Veyseh, Amir Pouran Ben and Nguyen, Thien Huu and Sainz, Oscar and Agirre, Eneko and Heintz, Ilana and Roth, Dan},
+  journal={ACM Computing Surveys},
+  volume={56},
+  number={2},
+  pages={1--40},
+  year={2023},
+  publisher={ACM New York, NY}
+}
+
+% GPT-2 paper (modern LLM architecture reference)
+@article{radford2019language,
+  title={Language models are unsupervised multitask learners},
+  author={Radford, Alec and Wu, Jeffrey and Child, Rewon and Luan, David and Amodei, Dario and Sutskever, Ilya and others},
+  journal={OpenAI blog},
+  volume={1},
+  number={8},
+  pages={9},
+  year={2019}
+}
+
+% Tool using LLM (gorilla)
+@misc{patil2023gorilla,
+      title={Gorilla: Large Language Model Connected with Massive APIs}, 
+      author={Shishir G. Patil and Tianjun Zhang and Xin Wang and Joseph E. Gonzalez},
+      year={2023},
+      eprint={2305.15334},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+
+% Anthropic sparse autoencoder mech interp 
+@article{bricken2023monosemanticity,
+   title={Towards Monosemanticity: Decomposing Language Models With Dictionary Learning},
+   author={Bricken, Trenton and Templeton, Adly and Batson, Joshua and Chen, Brian and Jermyn, Adam and Conerly, Tom and Turner, Nick and Anil, Cem and Denison, Carson and Askell, Amanda and Lasenby, Robert and Wu, Yifan and Kravec, Shauna and Schiefer, Nicholas and Maxwell, Tim and Joseph, Nicholas and Hatfield-Dodds, Zac and Tamkin, Alex and Nguyen, Karina and McLean, Brayden and Burke, Josiah E and Hume, Tristan and Carter, Shan and Henighan, Tom and Olah, Christopher},
+   year={2023},
+   journal={Transformer Circuits Thread},
+   note={https://transformer-circuits.pub/2023/monosemantic-features/index.html}
+}
+
+% Mech interp refs
+@misc{conmy2023automated,
+      title={Towards Automated Circuit Discovery for Mechanistic Interpretability}, 
+      author={Arthur Conmy and Augustine N. Mavor-Parker and Aengus Lynch and Stefan Heimersheim and Adrià Garriga-Alonso},
+      year={2023},
+      eprint={2304.14997},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+@misc{chefer2021transformer,
+      title={Transformer Interpretability Beyond Attention Visualization}, 
+      author={Hila Chefer and Shir Gur and Lior Wolf},
+      year={2021},
+      eprint={2012.09838},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
+
+% RAG paper reference 
+@article{lewis2020retrieval,
+  title={Retrieval-augmented generation for knowledge-intensive nlp tasks},
+  author={Lewis, Patrick and Perez, Ethan and Piktus, Aleksandra and Petroni, Fabio and Karpukhin, Vladimir and Goyal, Naman and K{\"u}ttler, Heinrich and Lewis, Mike and Yih, Wen-tau and Rockt{\"a}schel, Tim and others},
+  journal={Advances in Neural Information Processing Systems},
+  volume={33},
+  pages={9459--9474},
+  year={2020}
+}
+
+
+% Sparks of AGI -- GPT-4 experiments suggesting AGI. 
+@misc{bubeck2023sparks,
+      title={Sparks of Artificial General Intelligence: Early experiments with GPT-4}, 
+      author={Sébastien Bubeck and Varun Chandrasekaran and Ronen Eldan and Johannes Gehrke and Eric Horvitz and Ece Kamar and Peter Lee and Yin Tat Lee and Yuanzhi Li and Scott Lundberg and Harsha Nori and Hamid Palangi and Marco Tulio Ribeiro and Yi Zhang},
+      year={2023},
+      eprint={2303.12712},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+% taming AI bots/LLM control theory but with wack equivalence classes 
+@misc{soatto2023taming,
+      title={Taming AI Bots: Controllability of Neural States in Large Language Models}, 
+      author={Stefano Soatto and Paulo Tabuada and Pratik Chaudhari and Tian Yu Liu},
+      year={2023},
+      eprint={2305.18449},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI}
+}
+
+% reachability for discrete-time stochastic systems via probability measures
+@misc{sivaramakrishnan2023stochastic,
+      title={Stochastic Reachability of Discrete-Time Stochastic Systems via Probability Measures}, 
+      author={Karthik Sivaramakrishnan and Vignesh Sivaramakrishnan and Meeko M. K. Oishi},
+      year={2023},
+      eprint={2304.00598},
+      archivePrefix={arXiv},
+      primaryClass={math.OC}
+}
+
+
+% Distributed control systems
+@article{lian2002network,
+  title={Network design consideration for distributed control systems},
+  author={Lian, Feng-Li and Moyne, James and Tilbury, Dawn},
+  journal={IEEE transactions on control systems technology},
+  volume={10},
+  number={2},
+  pages={297--307},
+  year={2002},
+  publisher={IEEE}
+}
+
+% LLM Tool makers
+@misc{llm_tool_makers,
+      title={Large Language Models as Tool Makers}, 
+      author={Tianle Cai and Xuezhi Wang and Tengyu Ma and Xinyun Chen and Denny Zhou},
+      year={2023},
+      eprint={2305.17126},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+
+
+% Economics control theory (and life sci)
+@book{anicta2011introduction,
+  title={An introduction to optimal control problems in life sciences and economics: From mathematical models to numerical simulation with MATLAB{\textregistered}},
+  author={Ani{\c{t}}a, Sebastian and Arn{\u{a}}utu, Viorel and Capasso, Vincenzo and Capasso, Vincenzo},
+  volume={2},
+  year={2011},
+  publisher={Springer}
+}
+
+
+% John Doyle cell signalling control theory 
+@article{yi2000robust,
+  title={Robust perfect adaptation in bacterial chemotaxis through integral feedback control},
+  author={Yi, Tau-Mu and Huang, Yun and Simon, Melvin I and Doyle, John},
+  journal={Proceedings of the National Academy of Sciences},
+  volume={97},
+  number={9},
+  pages={4649--4653},
+  year={2000},
+  publisher={National Acad Sciences}
+}
+
+% OG Transformer circuit interpretability paper 
+@article{elhage2021mathematical,
+   title={A Mathematical Framework for Transformer Circuits},
+   author={Elhage, Nelson and Nanda, Neel and Olsson, Catherine and Henighan, Tom and Joseph, Nicholas and Mann, Ben and Askell, Amanda and Bai, Yuntao and Chen, Anna and Conerly, Tom and DasSarma, Nova and Drain, Dawn and Ganguli, Deep and Hatfield-Dodds, Zac and Hernandez, Danny and Jones, Andy and Kernion, Jackson and Lovitt, Liane and Ndousse, Kamal and Amodei, Dario and Brown, Tom and Clark, Jack and Kaplan, Jared and McCandlish, Sam and Olah, Chris},
+   year={2021},
+   journal={Transformer Circuits Thread},
+   note={https://transformer-circuits.pub/2021/framework/index.html}
+}
+
+
+% OG Chat RLHF paper from OpenAI (recipe for GPT3.5)
+@article{rlhf_chatbot,
+  title={Training a helpful and harmless assistant with reinforcement learning from human feedback},
+  author={Bai, Yuntao and Jones, Andy and Ndousse, Kamal and Askell, Amanda and Chen, Anna and DasSarma, Nova and Drain, Dawn and Fort, Stanislav and Ganguli, Deep and Henighan, Tom and others},
+  journal={arXiv preprint arXiv:2204.05862},
+  year={2022}
+}
+
+% CodeLlama paper
+@misc{code_llama,
+      title={Code Llama: Open Foundation Models for Code}, 
+      author={Baptiste Rozière and Jonas Gehring and Fabian Gloeckle and Sten Sootla and Itai Gat and Xiaoqing Ellen Tan and Yossi Adi and Jingyu Liu and Tal Remez and Jérémy Rapin and Artyom Kozhevnikov and Ivan Evtimov and Joanna Bitton and Manish Bhatt and Cristian Canton Ferrer and Aaron Grattafiori and Wenhan Xiong and Alexandre Défossez and Jade Copet and Faisal Azhar and Hugo Touvron and Louis Martin and Nicolas Usunier and Thomas Scialom and Gabriel Synnaeve},
+      year={2023},
+      eprint={2308.12950},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+% Machine translation LLM paper 
+@article{wang2023document,
+  title={Document-level machine translation with large language models},
+  author={Wang, Longyue and Lyu, Chenyang and Ji, Tianbo and Zhang, Zhirui and Yu, Dian and Shi, Shuming and Tu, Zhaopeng},
+  journal={arXiv preprint arXiv:2304.02210},
+  year={2023}
+}
+
+% Gpt-4 technical report
+@misc{openai2023gpt4,
+      title={GPT-4 Technical Report}, 
+      author={OpenAI},
+      year={2023},
+      eprint={2303.08774},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+% Introducing ChatGPT 3.5
+@misc{GPT3_5_blog, url={https://openai.com/blog/chatgpt}, journal={Introducing ChatGPT}, publisher={OpenAI}, author={OpenAI}, year={2022}, month={Nov}} 
+
+% Numeracy + data science as emergent property of LLMs 
+@misc{noever2023numeracy,
+      title={Numeracy from Literacy: Data Science as an Emergent Skill from Large Language Models}, 
+      author={David Noever and Forrest McKee},
+      year={2023},
+      eprint={2301.13382},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+% Psychology of LLMs -- treat LLMs as psych experiment subjects
+@misc{hagendorff2023machine,
+      title={Machine Psychology: Investigating Emergent Capabilities and Behavior in Large Language Models Using Psychological Methods}, 
+      author={Thilo Hagendorff},
+      year={2023},
+      eprint={2303.13988},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+% Paper on emergent properties of LLMs
+@misc{wei2022emergent,
+      title={Emergent Abilities of Large Language Models}, 
+      author={Jason Wei and Yi Tay and Rishi Bommasani and Colin Raffel and Barret Zoph and Sebastian Borgeaud and Dani Yogatama and Maarten Bosma and Denny Zhou and Donald Metzler and Ed H. Chi and Tatsunori Hashimoto and Oriol Vinyals and Percy Liang and Jeff Dean and William Fedus},
+      year={2022},
+      eprint={2206.07682},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+% Llama-1 paper
+@misc{llama_1,
+      title={LLaMA: Open and Efficient Foundation Language Models}, 
+      author={Hugo Touvron and Thibaut Lavril and Gautier Izacard and Xavier Martinet and Marie-Anne Lachaux and Timothée Lacroix and Baptiste Rozière and Naman Goyal and Eric Hambro and Faisal Azhar and Aurelien Rodriguez and Armand Joulin and Edouard Grave and Guillaume Lample},
+      year={2023},
+      eprint={2302.13971},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+
+% babl dataset -- OG reasoning dataset. 
+@inproceedings{babl_dataset_reasoning,
+  author       = {Jason Weston and
+                  Antoine Bordes and
+                  Sumit Chopra and
+                  Tom{\'{a}}s Mikolov},
+  editor       = {Yoshua Bengio and
+                  Yann LeCun},
+  title        = {Towards AI-Complete Question Answering: {A} Set of Prerequisite Toy
+                  Tasks},
+  booktitle    = {4th International Conference on Learning Representations, {ICLR} 2016,
+                  San Juan, Puerto Rico, May 2-4, 2016, Conference Track Proceedings},
+  year         = {2016},
+  url          = {http://arxiv.org/abs/1502.05698},
+  timestamp    = {Mon, 28 Dec 2020 11:31:02 +0100},
+  biburl       = {https://dblp.org/rec/journals/corr/WestonBCM15.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@book{ogata2010modern,
+  title={Modern control engineering fifth edition},
+  author={Ogata, Katsuhiko},
+  year={2010}
+}
+
+@book{kalman1969topics,
+  title={Topics in mathematical system theory},
+  author={Kalman, Rudolf Emil and Falb, Peter L and Arbib, Michael A},
+  volume={33},
+  year={1969},
+  publisher={McGraw-Hill New York}
+}
+
+% graph of thought 
+@misc{besta2023graph,
+      title={Graph of Thoughts: Solving Elaborate Problems with Large Language Models}, 
+      author={Maciej Besta and Nils Blach and Ales Kubicek and Robert Gerstenberger and Lukas Gianinazzi and Joanna Gajda and Tomasz Lehmann and Michal Podstawski and Hubert Niewiadomski and Piotr Nyczyk and Torsten Hoefler},
+      year={2023},
+      eprint={2308.09687},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+@misc{guo2021gradientbased,
+      title={Gradient-based Adversarial Attacks against Text Transformers}, 
+      author={Chuan Guo and Alexandre Sablayrolles and Hervé Jégou and Douwe Kiela},
+      year={2021},
+      eprint={2104.13733},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+% tree of thought
+@misc{yao2023tree,
+      title={Tree of Thoughts: Deliberate Problem Solving with Large Language Models}, 
+      author={Shunyu Yao and Dian Yu and Jeffrey Zhao and Izhak Shafran and Thomas L. Griffiths and Yuan Cao and Karthik Narasimhan},
+      year={2023},
+      eprint={2305.10601},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+@misc{shi2022human,
+      title={Toward Human Readable Prompt Tuning: Kubrick's The Shining is a good movie, and a good prompt too?}, 
+      author={Weijia Shi and Xiaochuang Han and Hila Gonen and Ari Holtzman and Yulia Tsvetkov and Luke Zettlemoyer},
+      year={2022},
+      eprint={2212.10539},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+% chain of thought
+@misc{wei2023chainofthought,
+      title={Chain-of-Thought Prompting Elicits Reasoning in Large Language Models}, 
+      author={Jason Wei and Xuezhi Wang and Dale Schuurmans and Maarten Bosma and Brian Ichter and Fei Xia and Ed Chi and Quoc Le and Denny Zhou},
+      year={2023},
+      eprint={2201.11903},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+
+% control theory bible -- Sontag's Control Theory Book (Matt's recommendation)
+@book{control_bible,
+  title={Mathematical control theory: deterministic finite dimensional systems},
+  author={Sontag, Eduardo D},
+  volume={6},
+  year={2013},
+  publisher={Springer Science \& Business Media}
+}
+
+@misc{wen2023hard,
+      title={Hard Prompts Made Easy: Gradient-Based Discrete Optimization for Prompt Tuning and Discovery}, 
+      author={Yuxin Wen and Neel Jain and John Kirchenbauer and Micah Goldblum and Jonas Geiping and Tom Goldstein},
+      year={2023},
+      eprint={2302.03668},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+
+% Exemplar of prompt engineering, shows that zero-shot prompting is really interesting (better than few-shot)
+@misc{reynolds2021prompt,
+      title={Prompt Programming for Large Language Models: Beyond the Few-Shot Paradigm}, 
+      author={Laria Reynolds and Kyle McDonell},
+      year={2021},
+      eprint={2102.07350},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+% LLM = Human-level prompt engineers
+@misc{zhou2023large,
+      title={Large Language Models Are Human-Level Prompt Engineers}, 
+      author={Yongchao Zhou and Andrei Ioan Muresanu and Ziwen Han and Keiran Paster and Silviu Pitis and Harris Chan and Jimmy Ba},
+      year={2023},
+      eprint={2211.01910},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+
+
+
+% OG adversarial examples paper 
+@misc{goodfellow2015explaining,
+      title={Explaining and Harnessing Adversarial Examples}, 
+      author={Ian J. Goodfellow and Jonathon Shlens and Christian Szegedy},
+      year={2015},
+      eprint={1412.6572},
+      archivePrefix={arXiv},
+      primaryClass={stat.ML}
+}
+
+% sentiment analysis LLM example
+@article{wang2023chatgpt,
+  title={Is ChatGPT a good sentiment analyzer? A preliminary study},
+  author={Wang, Zengzhi and Xie, Qiming and Ding, Zixiang and Feng, Yi and Xia, Rui},
+  journal={arXiv preprint arXiv:2304.04339},
+  year={2023}
+}
+
+@INPROCEEDINGS{virus_control,
+  author={Roy, Sandip and Wan, Yan and Saberi, Ali},
+  booktitle={2009 IEEE Conference on Technologies for Homeland Security}, 
+  title={A network control theory approach to virus spread mitigation}, 
+  year={2009},
+  volume={},
+  number={},
+  pages={599-606},
+  doi={10.1109/THS.2009.5168092}}
+
+% LAMA factual recall dataset, early paper retrieving knowledge from LLMs
+@article{LAMA_dataset,
+  author       = {Fabio Petroni and
+                  Tim Rockt{\"{a}}schel and
+                  Patrick S. H. Lewis and
+                  Anton Bakhtin and
+                  Yuxiang Wu and
+                  Alexander H. Miller and
+                  Sebastian Riedel},
+  title        = {Language Models as Knowledge Bases?},
+  journal      = {CoRR},
+  volume       = {abs/1909.01066},
+  year         = {2019},
+  url          = {http://arxiv.org/abs/1909.01066},
+  eprinttype    = {arXiv},
+  eprint       = {1909.01066},
+  timestamp    = {Tue, 21 Jan 2020 08:54:02 +0100},
+  biburl       = {https://dblp.org/rec/journals/corr/abs-1909-01066.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+
+% Good source on suboptimality of un-optimized prompts. 
+@misc{jiang2020know,
+      title={How Can We Know What Language Models Know?}, 
+      author={Zhengbao Jiang and Frank F. Xu and Jun Araki and Graham Neubig},
+      year={2020},
+      eprint={1911.12543},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+
+
+% good review of LLM steering (fine-tuning, prompting, etc. )
+@article{survey_controllable_text_gen,
+  author       = {Hanqing Zhang and
+                  Haolin Song and
+                  Shaoyu Li and
+                  Ming Zhou and
+                  Dawei Song},
+  title        = {A Survey of Controllable Text Generation using Transformer-based Pre-trained
+                  Language Models},
+  journal      = {CoRR},
+  volume       = {abs/2201.05337},
+  year         = {2022},
+  url          = {https://arxiv.org/abs/2201.05337},
+  eprinttype    = {arXiv},
+  eprint       = {2201.05337},
+  timestamp    = {Mon, 30 Jan 2023 17:37:17 +0100},
+  biburl       = {https://dblp.org/rec/journals/corr/abs-2201-05337.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+
+% This is apparently where the term "clozure" originates to describe fill-in-the-blank LLM tasks.
+@article{cloze_1959,
+author = {Wilson L. Taylor},
+title ={“Cloze Procedure”: A New Tool for Measuring Readability},
+journal = {Journalism Quarterly},
+volume = {30},
+number = {4},
+pages = {415-433},
+year = {1953},
+doi = {10.1177/107769905303000401},
+
+URL = {
+        https://doi.org/10.1177/107769905303000401
+
+},
+eprint = {
+        https://doi.org/10.1177/107769905303000401
+
+}
+,
+    abstract = { Here is the first comprehensive statement of a research method and its theory which were introduced briefly during a workshop at the 1953 AEJ convention. Included are findings from three pilot studies and two experiments in which “cloze procedure” results are compared with those of two readability formulas. }
+}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% MACHINE LEARNING HALL OF FAME %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@article{vaswani2017attention,
+  title={Attention is all you need},
+  author={Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N and Kaiser, {\L}ukasz and Polosukhin, Illia},
+  journal={Advances in neural information processing systems},
+  volume={30},
+  year={2017}
+}
+
+% Falcon model 
+@article{falcon40b,
+  title={{Falcon-40B}: an open large language model with state-of-the-art performance},
+  author={Almazrouei, Ebtesam and Alobeidli, Hamza and Alshamsi, Abdulaziz and Cappelli, Alessandro and Cojocaru, Ruxandra and Debbah, Merouane and Goffinet, Etienne and Heslow, Daniel and Launay, Julien and Malartic, Quentin and Noune, Badreddine and Pannier, Baptiste and Penedo, Guilherme},
+  year={2023}
+}
+
+% wikitext dataset
+@misc{wikitext,
+      title={Pointer Sentinel Mixture Models}, 
+      author={Stephen Merity and Caiming Xiong and James Bradbury and Richard Socher},
+      year={2016},
+      eprint={1609.07843},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+@inproceedings{gpt3,
+ author = {Brown, Tom and Mann, Benjamin and Ryder, Nick and Subbiah, Melanie and Kaplan, Jared D and Dhariwal, Prafulla and Neelakantan, Arvind and Shyam, Pranav and Sastry, Girish and Askell, Amanda and Agarwal, Sandhini and Herbert-Voss, Ariel and Krueger, Gretchen and Henighan, Tom and Child, Rewon and Ramesh, Aditya and Ziegler, Daniel and Wu, Jeffrey and Winter, Clemens and Hesse, Chris and Chen, Mark and Sigler, Eric and Litwin, Mateusz and Gray, Scott and Chess, Benjamin and Clark, Jack and Berner, Christopher and McCandlish, Sam and Radford, Alec and Sutskever, Ilya and Amodei, Dario},
+ booktitle = {Advances in Neural Information Processing Systems},
+ editor = {H. Larochelle and M. Ranzato and R. Hadsell and M.F. Balcan and H. Lin},
+ pages = {1877--1901},
+ publisher = {Curran Associates, Inc.},
+ title = {Language Models are Few-Shot Learners},
+ url = {https://proceedings.neurips.cc/paper_files/paper/2020/file/1457c0d6bfcb4967418bfb8ac142f64a-Paper.pdf},
+ volume = {33},
+ year = {2020}
+}
+
+@misc{hu2021lora,
+      title={LoRA: Low-Rank Adaptation of Large Language Models}, 
+      author={Edward J. Hu and Yelong Shen and Phillip Wallis and Zeyuan Allen-Zhu and Yuanzhi Li and Shean Wang and Lu Wang and Weizhu Chen},
+      year={2021},
+      eprint={2106.09685},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+@misc{zou2023universal,
+      title={Universal and Transferable Adversarial Attacks on Aligned Language Models}, 
+      author={Andy Zou and Zifan Wang and J. Zico Kolter and Matt Fredrikson},
+      year={2023},
+      eprint={2307.15043},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+@misc{shin2020autoprompt,
+      title={AutoPrompt: Eliciting Knowledge from Language Models with Automatically Generated Prompts}, 
+      author={Taylor Shin and Yasaman Razeghi and Robert L. Logan IV au2 and Eric Wallace and Sameer Singh},
+      year={2020},
+      eprint={2010.15980},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+@misc{ouyang2022training,
+      title={Training language models to follow instructions with human feedback}, 
+      author={Long Ouyang and Jeff Wu and Xu Jiang and Diogo Almeida and Carroll L. Wainwright and Pamela Mishkin and Chong Zhang and Sandhini Agarwal and Katarina Slama and Alex Ray and John Schulman and Jacob Hilton and Fraser Kelton and Luke Miller and Maddie Simens and Amanda Askell and Peter Welinder and Paul Christiano and Jan Leike and Ryan Lowe},
+      year={2022},
+      eprint={2203.02155},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+@misc{lester2021power,
+      title={The Power of Scale for Parameter-Efficient Prompt Tuning}, 
+      author={Brian Lester and Rami Al-Rfou and Noah Constant},
+      year={2021},
+      eprint={2104.08691},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%%% Authored Papers %%%
+%%%%%%%%%%%%%%%%%%%%%%%
+
+@inproceedings{self_society_env,
+  title={Sensing of the Self, Society, and the Environment},
+  author={Mann, Steve and Pierce, Cayden and Bhargava, Aman and Tong, Christopher and Desai, Khantil and O’Shaughnessy, Kyle},
+  booktitle={Proceedings of IEEE Sensors},
+  year={2020}
+}
+
+@inproceedings{neurofeedback_rl,
+  title={A Novel Approach to EEG Neurofeedback via Reinforcement Learning},
+  author={Bhargava, Aman and O'Shaughnessy, Kyle and Mann, Steve},
+  booktitle={Proceedings of IEEE Sensors},
+  volume={2020},
+  year={2020}
+}
+
+@inproceedings{act_nn_p300,
+  title={Adaptive Chirplet Transform-Based Machine Learning for P300 Brainwave Classification},
+  author={Bhargava, Aman and Mann, Steve},
+  booktitle={2020 IEEE-EMBS Conference on Biomedical Engineering and Sciences (IECBES)},
+  pages={62--67},
+  year={2021},
+  organization={IEEE}
+}
+
+@article{airui,
+  title={Deep Learning for Enhanced Scratch Input},
+  author={Bhargava, Aman and Zhou, Alice X and Carnaffan, Adam and Mann, Steve},
+  journal={arXiv preprint arXiv:2111.15053},
+  year={2021}
+}
+
+@article{synrl,
+  title={Gradient-Free Neural Network Training via Synaptic-Level Reinforcement Learning},
+  author={Bhargava, Aman and Rezaei, Mohammad R and Lankarany, Milad},
+  journal={arXiv preprint arXiv:2105.14383},
+  year={2021}
+}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Programming Languages %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@article{julia_language,
+  title={Julia: A fresh approach to numerical computing},
+  author={Bezanson, Jeff and Edelman, Alan and Karpinski, Stefan and Shah, Viral B},
+  journal={SIAM review},
+  volume={59},
+  number={1},
+  pages={65--98},
+  year={2017},
+  publisher={SIAM},
+  url={https://doi.org/10.1137/141000671}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Statistical Modelling Sources %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% UMAP paper
+@article{umap,
+  title={Umap: Uniform manifold approximation and projection for dimension reduction},
+  author={McInnes, Leland and Healy, John and Melville, James},
+  journal={arXiv preprint arXiv:1802.03426},
+  year={2018}
+}
+
+@book{367_optimization_models,
+  title={Optimization models},
+  author={Calafiore, Giuseppe C and El Ghaoui, Laurent},
+  year={2014},
+  publisher={Cambridge university press}
+}
+
+% ECE367 Applied Linear Algebra Textbook
+@book{367_applied_linalg,
+  title={Introduction to applied linear algebra: vectors, matrices, and least squares},
+  author={Boyd, Stephen and Vandenberghe, Lieven},
+  year={2018},
+  publisher={Cambridge university press}
+}
+
+% POMDP First paper (60's)
+@article{POMDP_1960s,
+  author       = {Åström, Karl Johan},
+  issn         = {0022-247X},
+  language     = {eng},
+  pages        = {174--205},
+  publisher    = {Elsevier},
+  series       = {Journal of Mathematical Analysis and Applications},
+  title        = {Optimal Control of Markov Processes with Incomplete State Information I},
+  url          = {https://lup.lub.lu.se/search/files/5323668/8867085.pdf},
+  doi          = {10.1016/0022-247X(65)90154-X},
+  volume       = {10},
+  year         = {1965},
+}
+
+% Planning in POMDPs (sensor model citation)
+@article{kaelbling1998planning,
+  title={Planning and acting in partially observable stochastic domains},
+  author={Kaelbling, Leslie Pack and Littman, Michael L and Cassandra, Anthony R},
+  journal={Artificial intelligence},
+  volume={101},
+  number={1-2},
+  pages={99--134},
+  year={1998},
+  publisher={Elsevier}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% MIE424 Final Paper: Initialization in Deep Learning Survey Paper %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@article{gradinit,
+  title={Gradinit: Learning to initialize neural networks for stable and efficient training},
+  author={Zhu, Chen and Ni, Renkun and Xu, Zheng and Kong, Kezhi and Huang, W Ronny and Goldstein, Tom},
+  journal={Advances in Neural Information Processing Systems},
+  volume={34},
+  year={2021}
+}
+
+@article{metainit,
+  title={MetaInit: Initializing learning by learning to initialize},
+  author={Dauphin, Yann N and Schoenholz, Samuel},
+  journal={Advances in Neural Information Processing Systems},
+  volume={32},
+  year={2019}
+}
+@article{fixup,
+  title={Fixup initialization: Residual learning without normalization},
+  author={Zhang, Hongyi and Dauphin, Yann N and Ma, Tengyu},
+  journal={arXiv preprint arXiv:1901.09321},
+  year={2019}
+}
+@inproceedings{t-fixup,
+  title={Improving transformer optimization through better initialization},
+  author={Huang, Xiao Shi and Perez, Felipe and Ba, Jimmy and Volkovs, Maksims},
+  booktitle={International Conference on Machine Learning},
+  pages={4475--4483},
+  year={2020},
+  organization={PMLR}
+}
+
+@inproceedings{xavier_init,
+  title={Understanding the difficulty of training deep feedforward neural networks},
+  author={Glorot, Xavier and Bengio, Yoshua},
+  booktitle={Proceedings of the thirteenth international conference on artificial intelligence and statistics},
+  pages={249--256},
+  year={2010},
+  organization={JMLR Workshop and Conference Proceedings}
+}
+
+@inproceedings{he_init,
+  title={Delving deep into rectifiers: Surpassing human-level performance on imagenet classification},
+  author={He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
+  booktitle={Proceedings of the IEEE international conference on computer vision},
+  pages={1026--1034},
+  year={2015}
+}
+
+@inproceedings{resnet,
+  title={Deep residual learning for image recognition},
+  author={He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
+  booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},
+  pages={770--778},
+  year={2016}
+}
+
+@article{layer_norm,
+  title={Layer normalization},
+  author={Ba, Jimmy Lei and Kiros, Jamie Ryan and Hinton, Geoffrey E},
+  journal={arXiv preprint arXiv:1607.06450},
+  year={2016}
+}
+
+
+%%%%%%%%%%%%%%%%%%
+%%% Good Books %%%
+%%%%%%%%%%%%%%%%%%
+
+% Murphy's ML: A Probabilistic Perspective (ECE368 textbook)
+@Book{murphy2012machine,
+ author = {Murphy, Kevin},
+ title = {Machine learning : a probabilistic perspective},
+ publisher = {MIT Press},
+ year = {2012},
+ address = {Cambridge, Mass},
+ isbn = {9780262018029}
+ }
+
+% Bishop's pattern recognition in ML (ECE368 textbook)
+@Book{bishop2006pattern,
+ author = {Bishop, Christopher},
+ title = {Pattern recognition and machine learning},
+ publisher = {Springer},
+ year = {2006},
+ address = {New York},
+ isbn = {978-1-4939-3843-8}
+ }
+
+% Neural Bioelectricity (BME445) Textbook I
+@Book{plonsey_neural_bioelectricity,
+ author = {Plonsey, Robert},
+ title = {Bioelectricity : a quantitative approach},
+ publisher = {Springer},
+ year = {2014},
+ address = {New York, NY},
+ isbn = {978-1-4899-8408-1}
+ }
+
+% BME445 textbook II
+@Book{bower_book_of_genesis_445,
+ author = {Bower, James},
+ title = {The Book of GENESIS : Exploring Realistic Neural Models with the GEneral NEural SImulation System},
+ publisher = {Springer New York},
+ year = {1998},
+ address = {New York, NY},
+ isbn = {978-1-4612-1634-6}
+ }
+ 
+% BME205 textbook
+@Book{bme205_textbook,
+ author = {Sherwood, Lauralee},
+ title = {Human physiology : from cells to systems},
+ publisher = {Nelson},
+ year = {2019},
+ address = {Toronto, Ontario},
+ isbn = {978-0176744847}
+ }
+
+
+% Emergence/complex systems definition source
+@article{bar2002general,
+  title={General features of complex systems},
+  author={Bar-Yam, Yaneer},
+  journal={Encyclopedia of Life Support Systems (EOLSS), UNESCO, EOLSS Publishers, Oxford, UK},
+  volume={1},
+  year={2002}
+}
+
+% ECE421 textbook
+@book{learning_from_data,
+  title={Learning from data},
+  author={Abu-Mostafa, Yaser S and Magdon-Ismail, Malik and Lin, Hsuan-Tien},
+  volume={4},
+  year={2012},
+  publisher={AMLBook New York, NY, USA:}
+}
+
+% Goodfellow Deep Learning
+@book{goodfellow_dl,
+    title={Deep Learning},
+    author={Ian Goodfellow and Yoshua Bengio and Aaron Courville},
+    publisher={MIT Press},
+    note={\url{http://www.deeplearningbook.org}},
+    year={2016}
+}
+
+% Learning from Data (LFD)
+@book{lfd,
+  title={Learning from data},
+  author={Abu-Mostafa, Yaser S and Magdon-Ismail, Malik and Lin, Hsuan-Tien},
+  volume={4},
+  year={2012},
+  publisher={AMLBook New York, NY, USA:}
+}
+
+% Artificial Intelligence: A Modern Approach (AIMA)
+
+@Book{aima,
+ author = {Russell, Stuart},
+ title = {Artificial intelligence : a modern approach},
+ publisher = {Prentice Hall},
+ year = {2010},
+ address = {Upper Saddle River, New Jersey},
+ isbn = {978-0-13-604259-4}
+ }
+
+% A New Kind of Science
+@book{wolfram_nks,
+    Author = {Wolfram, Stephen},
+    Title = {A New Kind of Science},
+    Year = {2002},
+    Publisher = {Wolfram Media},
+    ISBN = {1579550088},
+    URL = {https://www.wolframscience.com},
+    Language = {English}
+}
+
+% TODO: Barto RL Textbook (ROB311) `barto_RL`
+@book{barto_RL,
+  title={Reinforcement learning: An introduction},
+  author={Sutton, Richard S and Barto, Andrew G},
+  year={2018},
+  publisher={MIT press}
+}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Core Machine Learning %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Deep reinforcement learning 2020 review
+@article{deep_RL_2020_review,
+   title={Comprehensive Review of Deep Reinforcement Learning Methods and Applications in Economics},
+   url={http://dx.doi.org/10.20944/preprints202003.0309.v1},
+   DOI={10.20944/preprints202003.0309.v1},
+   publisher={MDPI AG},
+   author={Mosavi, Amir and Ghamisi, Pedram and Faghan, Yaser and Duan, Puhong and Shamshirband, Shahab},
+   year={2020},
+   month={Mar}
+}
+
+
+% Mcilraith 2020 memory unit paper 
+@misc{icarte2020act,
+      title={The act of remembering: a study in partially observable reinforcement learning}, 
+      author={Rodrigo Toro Icarte and Richard Valenzano and Toryn Q. Klassen and Phillip Christoffersen and Amir-massoud Farahmand and Sheila A. McIlraith},
+      year={2020},
+      eprint={2010.01753},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+
+% Meta learning overview
+@incollection{vanschoren2019meta,
+  title={Meta-learning},
+  author={Vanschoren, Joaquin},
+  booktitle={Automated Machine Learning},
+  pages={35--61},
+  year={2019},
+  publisher={Springer, Cham}
+}
+
+% Automatic differentiation: 2018 survey
+@article{baydin2018automatic,
+  title={Automatic differentiation in machine learning: a survey},
+  author={Baydin, Atilim Gunes and Pearlmutter, Barak A and Radul, Alexey Andreyevich and Siskind, Jeffrey Mark},
+  journal={Journal of machine learning research},
+  volume={18},
+  year={2018},
+  publisher={Journal of Machine Learning Research}
+}
+
+% comparison of a bunch of gradient-based optimization algos for CNNs
+@inproceedings{dogo2018comparative,
+  title={A comparative analysis of gradient descent-based optimization algorithms on convolutional neural networks},
+  author={Dogo, EM and Afolabi, OJ and Nwulu, NI and Twala, B and Aigbavboa, CO},
+  booktitle={2018 International Conference on Computational Techniques, Electronics and Mechanical Systems (CTEMS)},
+  pages={92--99},
+  year={2018},
+  organization={IEEE}
+}
+
+% Evolutionary algorithms textbook
+@Book{simon2013evolutionary,
+ author = {Simon, Dan},
+ title = {Evolutionary optimization algorithms},
+ publisher = {Wiley-Blackwell},
+ year = {2013},
+ address = {Chichester},
+ isbn = {978-0-470-93741-9}
+ }
+ 
+% Evolutionary optimization -> NN training
+@inproceedings{morse2016simple,
+  title={Simple evolutionary optimization can rival stochastic gradient descent in neural networks},
+  author={Morse, Gregory and Stanley, Kenneth O},
+  booktitle={Proceedings of the Genetic and Evolutionary Computation Conference 2016},
+  pages={477--484},
+  year={2016}
+}
+
+% Review of NN optimization via evolutionary optimization
+@article{galvan2021neuroevolution,
+  title={Neuroevolution in deep neural networks: Current trends and future challenges},
+  author={Galv{\'a}n, Edgar and Mooney, Peter},
+  journal={IEEE Transactions on Artificial Intelligence},
+  year={2021},
+  publisher={IEEE}
+}
+
+% CNN review paper
+@inproceedings{aloysius2017review,
+  title={A review on deep convolutional neural networks},
+  author={Aloysius, Neena and Geetha, M},
+  booktitle={2017 International Conference on Communication and Signal Processing (ICCSP)},
+  pages={0588--0592},
+  year={2017},
+  organization={IEEE}
+}
+
+% ReLU Activations
+@article{schmidt2020nonparametric,
+  title={Nonparametric regression using deep neural networks with ReLU activation function},
+  author={Schmidt-Hieber, Johannes},
+  journal={The Annals of Statistics},
+  volume={48},
+  number={4},
+  pages={1875--1897},
+  year={2020},
+  publisher={Institute of Mathematical Statistics}
+}
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Computational Neuroscience Papers %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Neurotransmitter/neuromodulator/neurohormone release (insect brains)
+@article{ito2014systematic,
+  title={A systematic nomenclature for the insect brain},
+  author={Ito, Kei and Shinomiya, Kazunori and Ito, Masayoshi and Armstrong, J Douglas and Boyan, George and Hartenstein, Volker and Harzsch, Steffen and Heisenberg, Martin and Homberg, Uwe and Jenett, Arnim and others},
+  journal={Neuron},
+  volume={81},
+  number={4},
+  pages={755--765},
+  year={2014},
+  publisher={Elsevier}
+}
+
+% Zenke & Ganguli 2017 paper: synaptic intelligence for continual learning
+@inproceedings{zenke2017continual,
+  title={Continual learning through synaptic intelligence},
+  author={Zenke, Friedemann and Poole, Ben and Ganguli, Surya},
+  booktitle={International Conference on Machine Learning},
+  pages={3987--3995},
+  year={2017},
+  organization={PMLR}
+}
+
+% Synapse memory (biological reference from Zenke & Ganguli's paper from 2017)
+@article{redondo2011making,
+  title={Making memories last: the synaptic tagging and capture hypothesis},
+  author={Redondo, Roger L and Morris, Richard GM},
+  journal={Nature Reviews Neuroscience},
+  volume={12},
+  number={1},
+  pages={17--30},
+  year={2011},
+  publisher={Nature Publishing Group}
+}
+
+% Ising model of neural network for memory (pre-hopfield)
+@article{little1974existence,
+  title={The existence of persistent states in the brain},
+  author={Little, William A},
+  journal={Mathematical biosciences},
+  volume={19},
+  number={1-2},
+  pages={101--120},
+  year={1974},
+  publisher={Elsevier}
+}
+
+% Hopfield networks original publication
+@article{og_hopfield,
+  title={Neural networks and physical systems with emergent collective computational abilities},
+  author={Hopfield, John J},
+  journal={Proceedings of the national academy of sciences},
+  volume={79},
+  number={8},
+  pages={2554--2558},
+  year={1982},
+  publisher={National Acad Sciences}
+}
+
+% Optimization view of learning
+@article{hennig2021learning,
+  title={How learning unfolds in the brain: toward an optimization view},
+  author={Hennig, Jay A and Oby, Emily R and Losey, Darby M and Batista, Aaron P and Byron, M Yu and Chase, Steven M},
+  journal={Neuron},
+  volume={109},
+  number={23},
+  pages={3720--3735},
+  year={2021},
+  publisher={Elsevier}
+}
+
+
+% Eligibility traces and neo-hebbian rules
+@article{gerstner2018eligibility,
+  title={Eligibility traces and plasticity on behavioral time scales: experimental support of neohebbian three-factor learning rules},
+  author={Gerstner, Wulfram and Lehmann, Marco and Liakoni, Vasiliki and Corneil, Dane and Brea, Johanni},
+  journal={Frontiers in neural circuits},
+  volume={12},
+  pages={53},
+  year={2018},
+  publisher={Frontiers}
+}
+
+% Long-term potentiation (LTP) source
+@article{cooke2006plasticity,
+  title={Plasticity in the human central nervous system},
+  author={Cooke, Samuel Frazer and Bliss, Timothy VP},
+  journal={Brain},
+  volume={129},
+  number={7},
+  pages={1659--1673},
+  year={2006},
+  publisher={Oxford University Press}
+}
+
+% Cell-type--specific neuromodulation (multidigraph learning)
+@article{liu2021cell,
+  title={Cell-type--specific neuromodulation guides synaptic credit assignment in a spiking neural network},
+  author={Liu, Yuhan Helena and Smith, Stephen and Mihalas, Stefan and Shea-Brown, Eric and S{\"u}mb{\"u}l, Uygar},
+  journal={Proceedings of the National Academy of Sciences},
+  volume={118},
+  number={51},
+  year={2021},
+  publisher={National Acad Sciences}
+}
+% Cell-type--specific neuromodulator channels (biological/genomic evidence)
+@article{smith2019single,
+  title={Single-cell transcriptomic evidence for dense intracortical neuropeptide networks},
+  author={Smith, Stephen J and S{\"u}mb{\"u}l, Uygar and Graybuck, Lucas T and Collman, Forrest and Seshamani, Sharmishtaa and Gala, Rohan and Gliko, Olga and Elabbady, Leila and Miller, Jeremy A and Bakken, Trygve E and others},
+  journal={Elife},
+  volume={8},
+  pages={e47889},
+  year={2019},
+  publisher={eLife Sciences Publications Limited}
+}
+
+% 2009 reinforcement learning rule synaptic plasticity (hebbian+TD signal)
+@article{urbanczik2009reinforcement,
+  title={Reinforcement learning in populations of spiking neurons},
+  author={Urbanczik, Robert and Senn, Walter},
+  journal={Nature neuroscience},
+  volume={12},
+  number={3},
+  pages={250--252},
+  year={2009},
+  publisher={Nature Publishing Group}
+}
+
+% Another hebbian+TD signal learning rule
+@article{mazzoni1991more,
+  title={A more biologically plausible learning rule for neural networks.},
+  author={Mazzoni, Pietro and Andersen, Richard A and Jordan, Michael I},
+  journal={Proceedings of the National Academy of Sciences},
+  volume={88},
+  number={10},
+  pages={4433--4437},
+  year={1991},
+  publisher={National Acad Sciences}
+}
+
+
+% Kandel 2000 nobel prize-related work
+@article{kandel2004molecular,
+  title={The molecular biology of memory storage: a dialog between genes and synapses},
+  author={Kandel, Eric R},
+  journal={Bioscience reports},
+  volume={24},
+  number={4-5},
+  pages={475--522},
+  year={2004},
+  publisher={Portland Press Ltd.}
+}
+
+
+% Hawkin's 2016 Paper: also proof that neurons have thousands of synapses
+@article{hawkins2016neurons,
+  title={Why neurons have thousands of synapses, a theory of sequence memory in neocortex},
+  author={Hawkins, Jeff and Ahmad, Subutai},
+  journal={Frontiers in neural circuits},
+  volume={10},
+  pages={23},
+  year={2016},
+  publisher={Frontiers}
+}
+
+
+% Types of synapses (pharmacodynamics, chapter 3)
+@book{kapalka2009nutritional,
+  title={Nutritional and herbal therapies for children and adolescents: a handbook for mental health clinicians},
+  author={Kapalka, George M},
+  year={2009},
+  publisher={Academic Press}
+}
+
+% Stochastic neural networks
+@book{turchetti2004stochastic,
+  title={Stochastic models of neural networks},
+  author={Turchetti, Claudio},
+  volume={102},
+  year={2004},
+  publisher={IOS Press}
+}
+
+% Original backpropagation paper
+@article{og_backprop,
+  title={Learning representations by back-propagating errors},
+  author={Rumelhart, David E and Hinton, Geoffrey E and Williams, Ronald J},
+  journal={nature},
+  volume={323},
+  number={6088},
+  pages={533--536},
+  year={1986},
+  publisher={Nature Publishing Group}
+}
+
+% Rate-based vs. spike-based sims
+@article{brette2015philosophy,
+  title={Philosophy of the spike: rate-based vs. spike-based theories of the brain},
+  author={Brette, Romain},
+  journal={Frontiers in systems neuroscience},
+  volume={9},
+  pages={151},
+  year={2015},
+  publisher={Frontiers}
+}
+
+% 2021 Zenke Surrogate Gradients "remarkable" 
+@article{zenke2021remarkable,
+  title={The remarkable robustness of surrogate gradient learning for instilling complex function in spiking neural networks},
+  author={Zenke, Friedemann and Vogels, Tim P},
+  journal={Neural Computation},
+  volume={33},
+  number={4},
+  pages={899--925},
+  year={2021},
+  publisher={MIT Press One Rogers Street, Cambridge, MA 02142-1209, USA journals-info~…}
+}
+
+% More surrogate gradients (also Zenke)
+@article{neftci2019surrogate,
+  title={Surrogate gradient learning in spiking neural networks: Bringing the power of gradient-based optimization to spiking neural networks},
+  author={Neftci, Emre O and Mostafa, Hesham and Zenke, Friedemann},
+  journal={IEEE Signal Processing Magazine},
+  volume={36},
+  number={6},
+  pages={51--63},
+  year={2019},
+  publisher={IEEE}
+}
+
+% Expectation backpropagation: Probabilistic SNN -> differentiability
+@inproceedings{soudry2014expectation,
+  title={Expectation backpropagation: Parameter-free training of multilayer neural networks with continuous or discrete weights.},
+  author={Soudry, Daniel and Hubara, Itay and Meir, Ron},
+  booktitle={NIPS},
+  volume={1},
+  pages={2},
+  year={2014}
+}
+
+% Neural coding overview 1995: both rate + temporal is good(?)
+@article{stevens1995neural,
+  title={Neural coding: The enigma of the brain},
+  author={Stevens, Charles F and Zador, Anthony},
+  journal={Current Biology},
+  volume={5},
+  number={12},
+  pages={1370--1371},
+  year={1995},
+  publisher={Elsevier}
+}
+
+% Big spiking model (SNN) book, core resource on temporal coding
+@book{gerstner2002spiking,
+  title={Spiking neuron models: Single neurons, populations, plasticity},
+  author={Gerstner, Wulfram and Kistler, Werner M},
+  year={2002},
+  publisher={Cambridge university press}
+}
+
+% Shalizi Computational Structure of Spike trains (complexity, evidence of spikes as coding/computational paradigm).
+@article{haslinger2010computational,
+  title={The computational structure of spike trains},
+  author={Haslinger, Robert and Klinkner, Kristina Lisa and Shalizi, Cosma Rohilla},
+  journal={Neural computation},
+  volume={22},
+  number={1},
+  pages={121--157},
+  year={2010},
+  publisher={MIT Press One Rogers Street, Cambridge, MA 02142-1209, USA journals-info~…}
+}
+
+% Rate + temporal coding in SNNs (review paper)
+@article{guo2021neural,
+  title={Neural coding in spiking neural networks: A comparative study for robust neuromorphic systems},
+  author={Guo, Wenzhe and Fouda, Mohammed E and Eltawil, Ahmed M and Salama, Khaled Nabil},
+  journal={Frontiers in Neuroscience},
+  volume={15},
+  pages={212},
+  year={2021},
+  publisher={Frontiers}
+}
+
+% Original 1926 rate coding paper
+@article{adrian1926impulses,
+  title={The impulses produced by sensory nerve-endings: Part II. The response of a Single End-Organ},
+  author={Adrian, Edgar D and Zotterman, Yngve},
+  journal={The Journal of physiology},
+  volume={61},
+  number={2},
+  pages={151--171},
+  year={1926},
+  publisher={Wiley Online Library}
+}
+
+% Population coding
+@article{averbeck2006neural,
+  title={Neural correlations, population coding and computation},
+  author={Averbeck, Bruno B and Latham, Peter E and Pouget, Alexandre},
+  journal={Nature reviews neuroscience},
+  volume={7},
+  number={5},
+  pages={358--366},
+  year={2006},
+  publisher={Nature Publishing Group}
+}
+
+% Recurrence = common+central to biological information processing
+@article{spoerer2017recurrent,
+  title={Recurrent convolutional neural networks: a better model of biological object recognition},
+  author={Spoerer, Courtney J and McClure, Patrick and Kriegeskorte, Nikolaus},
+  journal={Frontiers in psychology},
+  volume={8},
+  pages={1551},
+  year={2017},
+  publisher={Frontiers}
+}
+
+
+% SuperSpike
+@article{superspike,
+  title={Superspike: Supervised learning in multilayer spiking neural networks},
+  author={Zenke, Friedemann and Ganguli, Surya},
+  journal={Neural computation},
+  volume={30},
+  number={6},
+  pages={1514--1541},
+  year={2018},
+  publisher={MIT Press One Rogers Street, Cambridge, MA 02142-1209, USA journals-info~…}
+}
+
+% SLAYER: Spike layer error reassignment in time (SuperSpike sequel, kinda)
+@inproceedings{SLAYER,
+  title={SLAYER: Spike Layer Error Reassignment in Time},
+  author={Shrestha, Sumit Bam and Orchard, Garrick},
+  booktitle={NeurIPS},
+  year={2018}
+}
+
+% 20 Watts: Human brain's power consumption
+@book{20w_human_brain,
+  title={The energy of life: The science of what makes our minds and bodies work},
+  author={Brown, Guy C},
+  year={1999},
+  publisher={Free Press New York}
+}
+
+@article{ai_neuro_forward,
+  title={How AI and neuroscience drive each other forwards},
+  author={Savage, Neil},
+  journal={Nature},
+  volume={571},
+  number={7766},
+  pages={S15--S15},
+  year={2019},
+  publisher={Nature Publishing Group}
+}
+
+% More modern LIF SNN overview
+@book{gerstner2014neuronal,
+  title={Neuronal dynamics: From single neurons to networks and models of cognition},
+  author={Gerstner, Wulfram and Kistler, Werner M and Naud, Richard and Paninski, Liam},
+  year={2014},
+  publisher={Cambridge University Press}
+}
+
+% Introduction of LIF SNN model
+@article{abbott1999lapicque,
+  title={Lapicque’s introduction of the integrate-and-fire model neuron (1907)},
+  author={Abbott, Larry F},
+  journal={Brain research bulletin},
+  volume={50},
+  number={5-6},
+  pages={303--304},
+  year={1999},
+  publisher={Citeseer}
+}
+
+% Feedback alignment 2016 lillicrap
+@article{feedback_alignment,
+  title={Random synaptic feedback weights support error backpropagation for deep learning},
+  author={Lillicrap, Timothy P and Cownden, Daniel and Tweed, Douglas B and Akerman, Colin J},
+  journal={Nature communications},
+  volume={7},
+  number={1},
+  pages={1--10},
+  year={2016},
+  publisher={Nature Publishing Group}
+}
+
+% Kording's learned feedback alignment thing
+@article{lansdell2019learning,
+  title={Learning to solve the credit assignment problem},
+  author={Lansdell, Benjamin James and Prakash, Prashanth Ravi and Kording, Konrad Paul},
+  journal={arXiv preprint arXiv:1906.00889},
+  year={2019}
+}
+
+% Synaptic plasticity: multiple forms, functions, and mechanisms
+@article{synaptic_plasticity,
+  title={Synaptic plasticity: multiple forms, functions, and mechanisms},
+  author={Citri, Ami and Malenka, Robert C},
+  journal={Neuropsychopharmacology},
+  volume={33},
+  number={1},
+  pages={18--41},
+  year={2008},
+  publisher={Nature Publishing Group}
+}
+
+% Theories of Error Back Propagation in the Brain `backprop_brain`
+@article{backprop_brain,
+	title="Theories of Error Back-Propagation in the Brain.",
+	author="James C.R. {Whittington} and Rafal {Bogacz}",
+	journal="Trends in Cognitive Sciences",
+	volume="23",
+	number="3",
+	pages="235--250",
+	notes="Sourced from Microsoft Academic - https://academic.microsoft.com/paper/2913907987",
+	year="2019"
+}
+
+% Analysing neurobiological models using communicating automata `neuro_comm_automata`
+    % using "Data Rich Communicating Automata" -> model backprop, general recirculation learning, large-scale neural network for modelling attentional spotlight mechanism.
+@article{neuro_comm_automata,
+	title="Analysing neurobiological models using communicating automata",
+	author="Li {Su} and Rodolfo {Gomez} and Howard {Bowman}",
+	journal="Formal Aspects of Computing",
+	volume="26",
+	number="6",
+	pages="1169--1204",
+	notes="Sourced from Microsoft Academic - https://academic.microsoft.com/paper/2089813709",
+	year="2014"
+}
+
+% Neural basis for decision making `neural_decision`
+    % overview of efforts as of 2007 in understanding neuronal basis of decision making. 
+@article{neural_decision,
+	title="The Neural Basis of Decision Making",
+	author="Joshua I. {Gold} and Michael N. {Shadlen}",
+	journal="Annual Review of Neuroscience",
+	volume="30",
+	number="1",
+	pages="535--574",
+	notes="Sourced from Microsoft Academic - https://academic.microsoft.com/paper/2169134378",
+	year="2007"
+}
+
+% Cortical substrates for exploratory decisions in humans `cortical_substrate_decisions`
+    % fMRI analysis of frontopolar cortex in decision making. 
+@article{cortical_substrate_decisions,
+	title="Cortical substrates for exploratory decisions in humans",
+	author="Nathaniel D. {Daw} and John P. {O'Doherty} and Peter {Dayan} and Ben {Seymour} and Raymond J. {Dolan}",
+	journal="Nature",
+	volume="441",
+	number="7095",
+	pages="876--879",
+	notes="Sourced from Microsoft Academic - https://academic.microsoft.com/paper/2077611535",
+	year="2006"
+}
+
+% Functional anatomy of the basal ganglia. I. The cortico-basal ganglia-thalamo-cortical loop `functional_cbgtc`
+    % 1995 review on information processing on CBGT-C loop.
+@article{functional_cbgtc,
+	title="Functional anatomy of the basal ganglia. I. The cortico-basal ganglia-thalamo-cortical loop",
+	author="André {Parent} and Lili-Naz {Hazrati}",
+	journal="Brain Research Reviews",
+	volume="20",
+	number="1",
+	pages="91--127",
+	notes="Sourced from Microsoft Academic - https://academic.microsoft.com/paper/2088495343",
+	year="1995"
+}
+
+% Unsolved Problems
+@article{unsolved_problems,
+	title="The unsolved problems of neuroscience",
+	author="Ralph {Adolphs}",
+	journal="Trends in Cognitive Sciences",
+	volume="19",
+	number="4",
+	pages="173--175",
+	notes="Sourced from Microsoft Academic - https://academic.microsoft.com/paper/2016952944",
+	year="2015"
+}
+
+% Credit Assignment (Rubin)
+@article{cbgt_rubin,
+	title="The credit assignment problem in cortico‐basal ganglia‐thalamic networks: A review, a problem and a possible solution",
+	author="Jonathan E. {Rubin} and Catalina {Vich} and Matthew {Clapp} and Kendra {Noneman} and Timothy {Verstynen}",
+	journal="European Journal of Neuroscience",
+	volume="53",
+	number="7",
+	pages="2234--2253",
+	notes="Sourced from Microsoft Academic - https://academic.microsoft.com/paper/3016724125",
+	year="2021"
+}
+
+% Bengio synaptic learning rule learning
+@book{bengio_synapse,
+  title={Learning a synaptic learning rule},
+  author={Bengio, Yoshua and Bengio, Samy and Cloutier, Jocelyn},
+  year={1990},
+  publisher={Citeseer}
+}
+
+% actual bengio synaptic learning rule metalearning
+@incollection{bengio2013optimization,
+  title={On the optimization of a synaptic learning rule},
+  author={Bengio, Samy and Bengio, Yoshua and Cloutier, Jocelyn and Gescei, Jan},
+  booktitle={Optimality in Biological and Artificial Networks?},
+  pages={281--303},
+  year={2013},
+  publisher={Routledge}
+}
+
+% Metalearning via evolution (2022, cartesian evolution, etc.)
+@article{jordan2021evolving,
+  title={Evolving interpretable plasticity for spiking networks},
+  author={Jordan, Jakob and Schmidt, Maximilian and Senn, Walter and Petrovici, Mihai A},
+  journal={Elife},
+  volume={10},
+  pages={e66273},
+  year={2021},
+  publisher={eLife Sciences Publications Limited}
+}
+
+% MIT Credit Assignment
+
+% Numenta Thousands of Synapses -> Memory
+@article{thousand_synapses,
+	title="Why Neurons Have Thousands of Synapses, a Theory of Sequence Memory in Neocortex.",
+	author="Jeff {Hawkins} and Subutai {Ahmad}",
+	journal="Frontiers in Neural Circuits",
+	volume="10",
+	pages="23--23",
+	notes="Sourced from Microsoft Academic - https://academic.microsoft.com/paper/3104162526",
+	year="2016"
+}
+
+% Single Neuron COmputation (mckenna)
+@book{single_neuron_computation,
+  title={Single neuron computation},
+  author={McKenna, Thomas M and Davis, Joel L and Zornetzer, Steven F},
+  year={2014},
+  publisher={Academic Press}
+}
+
+@article{realistic_neuron_sim,
+  title={Realistic modeling of neurons and networks: towards brain simulation},
+  author={D’Angelo, Egidio and Solinas, Sergio and Garrido, Jesus and Casellato, Claudia and Pedrocchi, Alessandra and Mapelli, Jonathan and Gandolfi, Daniela and Prestori, Francesca},
+  journal={Functional neurology},
+  volume={28},
+  number={3},
+  pages={153},
+  year={2013},
+  publisher={CIC Edizioni internazionali}
+}
+
+% Fire together wire together quote
+@article{keysers2014hebbian,
+  title={Hebbian learning and predictive mirror neurons for actions, sensations and emotions},
+  author={Keysers, Christian and Gazzola, Valeria},
+  journal={Philosophical Transactions of the Royal Society B: Biological Sciences},
+  volume={369},
+  number={1644},
+  pages={20130175},
+  year={2014},
+  publisher={The Royal Society}
+}
+
+% OG Hebbian learning rule introduction to the literature (1949)
+@article{hebb1949first,
+  title={The first stage of perception: growth of the assembly},
+  author={Hebb, Donald O},
+  journal={The Organization of Behavior},
+  volume={4},
+  pages={60--78},
+  year={1949},
+  publisher={Wiley, New York}
+}
+
+% An OG STDP paper! (highly cited)
+@article{og_stdp,
+  title={Spike timing--dependent plasticity: a Hebbian learning rule},
+  author={Caporale, Natalia and Dan, Yang},
+  journal={Annu. Rev. Neurosci.},
+  volume={31},
+  pages={25--46},
+  year={2008},
+  publisher={Annual Reviews}
+}
+
+% Actual STDP equation paper.
+@article{stdp_equation,
+  title={A learning theory for reward-modulated spike-timing-dependent plasticity with application to biofeedback},
+  author={Legenstein, Robert and Pecevski, Dejan and Maass, Wolfgang},
+  journal={PLoS computational biology},
+  volume={4},
+  number={10},
+  pages={e1000180},
+  year={2008},
+  publisher={Public Library of Science San Francisco, USA}
+}
+
+% BCM Learning rule resource
+@article{izhikevich2003relating,
+  title={Relating stdp to bcm},
+  author={Izhikevich, Eugene M and Desai, Niraj S},
+  journal={Neural computation},
+  volume={15},
+  number={7},
+  pages={1511--1523},
+  year={2003},
+  publisher={MIT Press}
+}
+
+
+% Direct source on noise + stochasticity in neural information coding (also heterogeneity)
+@article{hunsberger2014competing,
+  title={The competing benefits of noise and heterogeneity in neural coding},
+  author={Hunsberger, Eric and Scott, Matthew and Eliasmith, Chris},
+  journal={Neural computation},
+  volume={26},
+  number={8},
+  pages={1600--1623},
+  year={2014},
+  publisher={MIT Press}
+}
+
+
+% Synaptic-level RL in basal ganglia ACROSS SPECIES (Mink, drawn from CBGT Rubin paper)
+@article{lee2015between,
+  title={Between the primate and ‘reptilian’brain: Rodent models demonstrate the role of corticostriatal circuits in decision making},
+  author={Lee, A Moses and Tai, L-H and Zador, Anthony and Wilbrecht, Linda},
+  journal={Neuroscience},
+  volume={296},
+  pages={66--74},
+  year={2015},
+  publisher={Elsevier}
+}
+
+% OG REINFORCE Paper (1992), seminal credit assignment thing
+@article{REINFORCE,
+  title={Simple statistical gradient-following algorithms for connectionist reinforcement learning},
+  author={Williams, Ronald J},
+  journal={Machine learning},
+  volume={8},
+  number={3},
+  pages={229--256},
+  year={1992},
+  publisher={Springer}
+}
+
+% Random synaptic feedback weights support error backpropagation for deep learning
+@article{random_backprop,
+	title="Random synaptic feedback weights support error backpropagation for deep learning.",
+	author="Timothy P. {Lillicrap} and Daniel {Cownden} and Douglas B. {Tweed} and Colin J. {Akerman}",
+	journal="Nature Communications",
+	volume="7",
+	number="1",
+	pages="13276--13276",
+	notes="Sourced from Microsoft Academic - https://academic.microsoft.com/paper/2552737632",
+	year="2016"
+}
+
+% Learning to solve the credit assignment problem `grad_est_credit_assig`
+    % neurons use RL to approximate gradients, train network. 
+    % still propagate back an error signal, it's just a 'learned' way of conversion -> gradient. 
+    % TODO: Read this more thoroughly and try to synthesize it with your work. 
+@article{grad_est_credit_assig,
+	title="Learning to solve the credit assignment problem",
+	author="Benjamin James {Lansdell} and Prashanth Ravi {Prakash} and Konrad Paul {Kording}",
+	journal="arXiv preprint arXiv:1906.00889",
+	notes="Sourced from Microsoft Academic - https://academic.microsoft.com/paper/2947373402",
+	year="2019"
+}
+
+% Neuron as Agent
+@inproceedings{neuron_as_agent,
+	title="Neuron as an Agent",
+	author="Shohei {Ohsawa} and Kei {Akuzawa} and Tatsuya {Matsushima} and Gustavo {Bezerra} and Yusuke {Iwasawa} and Hiroshi {Kajino} and Seiya {Takenaka} and Yutaka {Matsuo}",
+	booktitle="ICLR 2018 : International Conference on Learning Representations 2018",
+	notes="Sourced from Microsoft Academic - https://academic.microsoft.com/paper/2787712361",
+	year="2018"
+}
+
+% OpenAI Cartpole Gym
+@misc{openai_gym,
+  Author = {Greg Brockman and Vicki Cheung and Ludwig Pettersson and Jonas Schneider and John Schulman and Jie Tang and Wojciech Zaremba},
+  Title = {OpenAI Gym},
+  Year = {2016},
+  Eprint = {arXiv:1606.01540},
+}
+
+% Ott Giving Up Control
+@article{giving_up_control,
+	title="Giving Up Control: Neurons as Reinforcement Learning Agents.",
+	author="Jordan {Ott}",
+	journal="arXiv preprint arXiv:2003.11642",
+	notes="Sourced from Microsoft Academic - https://academic.microsoft.com/paper/3013735613",
+	year="2020"
+}
+
+% Training and Inferring: https://www.biorxiv.org/content/10.1101/598086v3.full
+@article{training_and_inferring,
+	title="Training and inferring neural network function with multi-agent reinforcement learning",
+	author="Matthew {Chalk} and Gasper {Tkacik} and Olivier {Marre}",
+	journal="bioRxiv",
+	pages="598086",
+	notes="Sourced from Microsoft Academic - https://academic.microsoft.com/paper/3102071216",
+	year="2020"
+}
+
+% RL on `Single Neuron`   
+@article{rl_single_neuron,
+	title="Reinforcement Learning applied to Single Neuron",
+	author="Zhipeng {Wang} and Mingbo {Cai}",
+	journal="arXiv preprint arXiv:1505.04150",
+	notes="Sourced from Microsoft Academic - https://academic.microsoft.com/paper/1550418129",
+	year="2015"
+}
+
+@inproceedings{rezaei2018comparison,
+  title={A comparison study of point-process filter and deep learning performance in estimating rat position using an ensemble of place cells},
+  author={Rezaei, Mohammad R and Gillespie, Anna K and Guidera, Jennifer A and Nazari, Behzad and Sadri, Saeid and Frank, Loren M and Eden, Uri T and Yousefi, Ali},
+  booktitle={2018 40th Annual International Conference of the IEEE Engineering in Medicine and Biology Society (EMBC)},
+  pages={4732--4735},
+  year={2018},
+  organization={IEEE}
+}
+@article{hasanzadeh2020necessary,
+  title={Necessary conditions for reliable propagation of slowly time-varying firing rate},
+  author={Hasanzadeh, Navid and Rezaei, Mohammadreza and Faraz, Sayan and Popovic, Milos R and Lankarany, Milad},
+  journal={Frontiers in computational neuroscience},
+  volume={14},
+  pages={64},
+  year={2020},
+  publisher={Frontiers}
+}
+@article{rezaei2020time,
+  title={A Time-Varying Information Measure for Tracking Dynamics of Neural Codes in a Neural Ensemble},
+  author={Rezaei, Mohammad R and Popovic, Milos R and Lankarany, Milad},
+  journal={Entropy},
+  volume={22},
+  number={8},
+  pages={880},
+  year={2020},
+  publisher={Multidisciplinary Digital Publishing Institute}
+}
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Machine Learning/RL Papers %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Classic 2015 deep learning review by the superstars of deep learning
+@article{2015_dl_review,
+  title={Deep learning},
+  author={LeCun, Yann and Bengio, Yoshua and Hinton, Geoffrey},
+  journal={nature},
+  volume={521},
+  number={7553},
+  pages={436--444},
+  year={2015},
+  publisher={Nature Publishing Group}
+}
+
+% My first spiking neural network SNN review paper
+@article{og_snn_review,
+  title={Deep learning with spiking neurons: opportunities and challenges},
+  author={Pfeiffer, Michael and Pfeil, Thomas},
+  journal={Frontiers in neuroscience},
+  volume={12},
+  pages={774},
+  year={2018},
+  publisher={Frontiers}
+}
+
+% Circulant weight matrices -> CNN acceleration
+@inproceedings{circ_cnn,
+  title={Circnn: accelerating and compressing deep neural networks using block-circulant weight matrices},
+  author={Ding, Caiwen and Liao, Siyu and Wang, Yanzhi and Li, Zhe and Liu, Ning and Zhuo, Youwei and Wang, Chao and Qian, Xuehai and Bai, Yu and Yuan, Geng and others},
+  booktitle={Proceedings of the 50th Annual IEEE/ACM International Symposium on Microarchitecture},
+  pages={395--408},
+  year={2017}
+}
+
+% The CLASSIC deep learning review paper
+@article{deep_learning,
+  title={Deep learning},
+  author={LeCun, Yann and Bengio, Yoshua and Hinton, Geoffrey},
+  journal={nature},
+  volume={521},
+  number={7553},
+  pages={436--444},
+  year={2015},
+  publisher={Nature Publishing Group}
+}
+% CNN Review paper convolutional neural network
+@article{cnn_review,
+  title={Deep convolutional neural networks for image classification: A comprehensive review},
+  author={Rawat, Waseem and Wang, Zenghui},
+  journal={Neural computation},
+  volume={29},
+  number={9},
+  pages={2352--2449},
+  year={2017},
+  publisher={MIT Press}
+}
+
+% "A Critical Review of Recurrent Neural Networks for Sequence Learning
+@article{rnn_review,
+  title={A critical review of recurrent neural networks for sequence learning},
+  author={Lipton, Zachary C and Berkowitz, John and Elkan, Charles},
+  journal={arXiv preprint arXiv:1506.00019},
+  year={2015}
+}
+
+
+% OG Perceptron paper: "The Perceptron: A probabilistic model for information storage and organization in the brain"
+@article{og_perceptron,
+	title="The perceptron: a probabilistic model for information storage and organization in the brain.",
+	author="F. {Rosenblatt}",
+	journal="Psychological Review",
+	volume="65",
+	number="6",
+	pages="386--408",
+	notes="Sourced from Microsoft Academic - https://academic.microsoft.com/paper/2040870580",
+	year="1958"
+}
+
+% Comparative study of biological and artificial neural networks
+@article{bio_artificial_neuron_comparison,
+  title={Comparative study of biological and artificial neural networks},
+  author={Eluyode, OS and Akomolafe, Dipo Theophilus},
+  journal={European Journal of Applied Engineering and Scientific Research},
+  volume={2},
+  number={1},
+  pages={36--46},
+  year={2013}
+}
+
+% Learning to solve the credit assignment problem (2019)
+@article{learning_credit_assignment,
+  title={Learning to solve the credit assignment problem},
+  author={Lansdell, Benjamin James and Prakash, Prashanth Ravi and Kording, Konrad Paul},
+  journal={arXiv preprint arXiv:1906.00889},
+  year={2019}
+}
+
+% Synaptic-level RL in basal ganglia (Mink, drawn from CBGT Rubin paper)
+@article{mink1996basal,
+  title={The basal ganglia: focused selection and inhibition of competing motor programs},
+  author={Mink, Jonathan W},
+  journal={Progress in neurobiology},
+  volume={50},
+  number={4},
+  pages={381--425},
+  year={1996},
+  publisher={Elsevier}
+}
+
+% Timicheck noise in biological info processing
+@article{kadmon2020predictive,
+  title={Predictive coding in balanced neural networks with noise, chaos and delays},
+  author={Kadmon, Jonathan and Timcheck, Jonathan and Ganguli, Surya},
+  journal={Advances in Neural Information Processing Systems},
+  volume={33},
+  year={2020}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Philosophy/Theory Papers %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Chollet Measures of Intelligence
+@article{chollet2019measure,
+  title={On the measure of intelligence},
+  author={Chollet, Fran{\c{c}}ois},
+  journal={arXiv preprint arXiv:1911.01547},
+  year={2019}
+}
+
+% Dennett "real Patterns": Philosophy of cellular automata and patterns, etc.
+@article{dennett_real_patterns,
+ ISSN = {0022362X},
+ URL = {http://www.jstor.org/stable/2027085},
+ author = {Daniel C. Dennett},
+ journal = {The Journal of Philosophy},
+ number = {1},
+ pages = {27--51},
+ publisher = {Journal of Philosophy, Inc.},
+ title = {Real Patterns},
+ volume = {88},
+ year = {1991}
+}
+
+% Conway's game of life. 
+@article{game_of_life,
+  title={The game of life},
+  author={Conway, John},
+  journal={Scientific American},
+  volume={223},
+  number={4},
+  pages={4},
+  year={1970}
+}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Important Datasets %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@misc{notMNIST, 
+    url={http://yaroslavvb.blogspot.com/2011/09/notmnist-dataset.html}, 
+    title={notMNIST dataset}, 
+    journal="Machine Learning, etc",
+    publisher="Google",
+    author={Bulatov, Yaroslav}, 
+    year={2011}, 
+    month={September}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% OXFORD CANCER ANALYTICS-RELATED PUBLICATIONS %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Oxford Cancer Analytics Site: https://sites.google.com/oxcan.org/oxcan/home
+@misc{oxcan_site, 
+  title={Oxford cancer analytics}, 
+  url={https://sites.google.com/oxcan.org/oxcan/home}, 
+  journal={Oxford Cancer Analytics}, 
+  publisher={Oxford Cancer Analytics}, 
+  author={Liu, Peter and Halner, Andreas}, 
+  year={2021}
+} 
+
+% CancerSEEK Paper
+@article{cancerseek,
+  title={Detection and localization of surgically resectable cancers with a multi-analyte blood test},
+  author={Cohen, Joshua D and Li, Lu and Wang, Yuxuan and Thoburn, Christopher and Afsari, Bahman and Danilova, Ludmila and Douville, Christopher and Javed, Ammar A and Wong, Fay and Mattox, Austin and others},
+  journal={Science},
+  volume={359},
+  number={6378},
+  pages={926--930},
+  year={2018},
+  publisher={American Association for the Advancement of Science}
+}
+
+% ICLR: Deep learning mutation prediction enables early stage lung cancer detection in liquid biopsy
+@article{dl_mut_pred,
+  title={Deep learning mutation prediction enables early stage lung cancer detection in liquid biopsy},
+  author={Kothen-Hill, Steven T and Zviran, Asaf and Schulman, Rafael C and Deochand, Sunil and Gaiti, Federico and Maloney, Dillon and Huang, Kevin Y and Liao, Will and Robine, Nicolas and Omans, Nathaniel D and others},
+  year={2018}
+}
+
+% Visual circulating tumour cell classification with CNN
+@inproceedings{visual_ctc_cnn,
+  title={A deep convolutional neural network trained on representative samples for circulating tumor cell detection},
+  author={Mao, Yunxiang and Yin, Zhaozheng and Schober, Joseph},
+  booktitle={2016 IEEE Winter Conference on Applications of Computer Vision (WACV)},
+  pages={1--6},
+  year={2016},
+  organization={IEEE}
+}
+
+% Liquid Biopsy Overview
+@article{liquid_biopsy_overview,
+  title={An overview of liquid biopsy for screening and early detection of cancer},
+  author={Cowling, Tara and Loshak, Hannah},
+  journal={CADTH Issues in Emerging Health Technologies},
+  year={2019},
+  publisher={Canadian Agency for Drugs and Technologies in Health}
+}
+
+% Nanoparticle Corona
+@article{nanoparticle_corona,
+  title={Rapid, deep and precise profiling of the plasma proteome with multi-nanoparticle protein corona},
+  author={Blume, John E and Manning, William C and Troiano, Gregory and Hornburg, Daniel and Figa, Michael and Hesterberg, Lyndal and Platt, Theodore L and Zhao, Xiaoyan and Cuaresma, Rea A and Everley, Patrick A and others},
+  journal={Nature communications},
+  volume={11},
+  number={1},
+  pages={1--14},
+  year={2020},
+  publisher={Nature Publishing Group}
+}
+
+% ML Liquid Biopsy Review
+@article{ml_liquid_biopsy_review,
+  title={Machine Learning Protocols in Early Cancer Detection Based on Liquid Biopsy: A Survey},
+  author={Liu, Linjing and Chen, Xingjian and Petinrin, Olutomilayo Olayemi and Zhang, Weitong and Rahaman, Saifur and Tang, Zhi-Ri and Wong, Ka-Chun},
+  journal={Life},
+  volume={11},
+  number={7},
+  pages={638},
+  year={2021},
+  publisher={Multidisciplinary Digital Publishing Institute}
+}
+
+% Britannica Cancer
+@article{britannica_cancer, 
+  title={Cancer}, 
+  url={https://www.britannica.com/science/cancer-disease}, 
+  journal={Encyclopædia Britannica}, 
+  publisher={Encyclopædia Britannica, inc.}
+} 
+
+% CancerA1DE/Super good classifier for CancerSEEK dataset
+@article{cancerA1DE,
+title = {Early Cancer Detection from Multianalyte Blood Test Results},
+journal = {iScience},
+volume = {15},
+pages = {332-341},
+year = {2019},
+issn = {2589-0042},
+doi = {https://doi.org/10.1016/j.isci.2019.04.035},
+url = {https://www.sciencedirect.com/science/article/pii/S2589004219301324},
+author = {Ka-Chun Wong and Junyi Chen and Jiao Zhang and Jiecong Lin and Shankai Yan and Shxiong Zhang and Xiangtao Li and Cheng Liang and Chengbin Peng and Qiuzhen Lin and Sam Kwong and Jun Yu},
+keywords = {Biological Sciences, Cancer Systems Biology, Cancer, Algorithms, Bioinformatics},
+}
+
+@article{A1DE,
+  title={Not so naive Bayes: aggregating one-dependence estimators},
+  author={Webb, Geoffrey I and Boughton, Janice R and Wang, Zhihai},
+  journal={Machine learning},
+  volume={58},
+  number={1},
+  pages={5--24},
+  year={2005},
+  publisher={Springer}
+}
+
+@article{missforest,
+  title={MissForest—non-parametric missing value imputation for mixed-type data},
+  author={Stekhoven, Daniel J and B{\"u}hlmann, Peter},
+  journal={Bioinformatics},
+  volume={28},
+  number={1},
+  pages={112--118},
+  year={2012},
+  publisher={Oxford University Press}
+}
