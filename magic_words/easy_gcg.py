@@ -64,6 +64,7 @@ def easy_gcg_qa_ids(question_ids:torch.Tensor,
                     batch_size=768,
                     num_iters=34,
                     max_parallel=1000, 
+                    init_prompt_ids:torch.Tensor=None,
                     blacklist=[]):
     """
     Performs GCG to optimize the probability of answer_ids given 
@@ -82,6 +83,7 @@ def easy_gcg_qa_ids(question_ids:torch.Tensor,
         batch_size: batch size for exploring promising token swaps.
         num_iters: number of iterations to run GCG for.
         max_parallel: maximum number of tokens to test in parallel.
+        init_prompt_ids: [1, num_tokens] tensor of token ids to start with.
         blackliset: list[int] of token ids to never apply in the swap. 
 
     Returns the optimized `prompt_ids` tensor as a shape [1, num_tokens]
@@ -99,12 +101,19 @@ def easy_gcg_qa_ids(question_ids:torch.Tensor,
     # tokens in `blacklist`.
     prompt_ids = instantiate_prompt(model, tokenizer, blacklist, num_tokens)
     print("Initial prompt: ", tokenizer.decode(prompt_ids[0].tolist()))
+
+    if init_prompt_ids is not None:
+        if init_prompt_ids.shape[1] > num_tokens:
+            init_prompt_ids = init_prompt_ids[:, -num_tokens:]
+        elif init_prompt_ids.shape[1] < num_tokens:
+            prompt_ids[0, -init_prompt_ids.shape[1]:] = init_prompt_ids[0,:]
+    # pdb.set_trace()
     # prompt_ids has shape [1, num_tokens]
 
     # now let's compute the score leveraging the `future_mask` and make sure it 
     # gives the same answer. 
     future_mask = get_future_mask(question_ids, answer_ids, model)
-    print(future_mask)
+    print("Future mask: ", future_mask)
 
     with torch.no_grad():
         init_loss, _ = compute_score(prompt_ids, 

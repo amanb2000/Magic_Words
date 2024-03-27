@@ -42,11 +42,13 @@ def backoff_hack_qa_ids(question_ids:torch.Tensor,
 
     question_ids = question_ids.to(model.device)
     answer_ids = answer_ids.to(model.device)
+    qa_ids = torch.cat([question_ids, answer_ids], dim=1)
     # Check that question_ids has shape [1, num_question_toks]
     # Check that answer_ids has shape [1, 1]
     assert question_ids.shape[0] == 1
     assert answer_ids.shape[0] == 1
-    assert answer_ids.shape[1] == 1
+    # assert answer_ids.shape[1] == 1
+    answer_len = answer_ids.shape[1]
 
     # Make the bruteforce search limiter 
     if search_limiter is None:
@@ -58,21 +60,20 @@ def backoff_hack_qa_ids(question_ids:torch.Tensor,
         print("\nComputing base loss...")
 
     with torch.no_grad(): 
-        q_logits = model(question_ids).logits
+        qa_logits = model(qa_ids).logits
 
-
-    base_answer_logits = q_logits[:, -1, :]
-    base_answer_pred = base_answer_logits.argmax().item()
-    base_correct = base_answer_pred == answer_ids[0]
-    base_loss = torch.nn.functional.cross_entropy(base_answer_logits.cuda(), 
-                                                  answer_ids[0]).item()
+    base_answer_logits = qa_logits[:, -(answer_len+1):-1, :]
+    base_answer_pred = base_answer_logits.argmax(-1)
+    base_correct = (base_answer_pred == answer_ids).sum().item() == answer_len
+    base_loss = torch.nn.functional.cross_entropy(base_answer_logits.cuda()[0, :, :], 
+                                                  answer_ids[0, :]).item()
     if base_correct: 
         if verbose:
             print("Model already gets the correct answer!")
         return {
             'optimal_prompt': [], 
             'optimal_prompt_length': 0, 
-            'prompt_loss': -1.0, 
+            'prompt_loss': float(base_loss), 
             'search_method': 'base',
             'prompt_correct': True, 
             'base_loss': float(base_loss),
@@ -105,19 +106,20 @@ def backoff_hack_qa_ids(question_ids:torch.Tensor,
                                                   search_limiter, 
                                                   max_parallel=max_parallel)
         ppq = torch.cat([new_prompt, pq], dim=1)
+        ppqa = torch.cat([ppq, answer_ids], dim=1)
 
         # check if we have the correct answer
         with torch.no_grad(): 
-            ppq_logits = model(ppq).logits
-        answer_logits = ppq_logits[:, -1, :]
-        answer_pred = answer_logits.argmax()
-        new_loss = torch.nn.functional.cross_entropy(answer_logits, answer_ids[0]).item()
+            ppqa_logits = model(ppqa).logits
+        answer_logits = ppqa_logits[:, -(answer_len+1):-1, :]
+        answer_pred = answer_logits.argmax(-1)
+        new_loss = torch.nn.functional.cross_entropy(answer_logits.cuda()[0, :, :], answer_ids[0, :]).item()
         if verbose: 
             print("New loss: ", new_loss)
-            print("Predicted answer: ", answer_pred.item())
-            print("Desired answer: ", answer_ids.item())
+            print("Predicted answer: ", answer_pred)
+            print("Desired answer: ", answer_ids)
 
-        if answer_pred == answer_ids[0]:
+        if (answer_pred == answer_ids).sum().item() == answer_len:
             if verbose:
                 print(f"Found correct answer at prompt length {i}!")
             return_dict['optimal_prompt'] = ppq[:, :i].tolist()
@@ -131,7 +133,10 @@ def backoff_hack_qa_ids(question_ids:torch.Tensor,
         prior_best_prompt_ids = ppq[:, :i]
         print(f"Performing another round with prior_best_prompt_ids = {prior_best_prompt_ids}")
 
-
+    if len(greedy_lengths) > 0:
+        best_prompt_ids = prior_best_prompt_ids 
+    else: 
+        best_prompt_ids = None
 
     print("\nMoving on to easy-gcg search...")
 
@@ -147,22 +152,25 @@ def backoff_hack_qa_ids(question_ids:torch.Tensor,
                                           batch_size=768, 
                                           num_iters=34,
                                           blacklist=blacklist,
+                                          init_prompt_ids=best_prompt_ids,
                                           max_parallel=max_parallel)
         if verbose:
             print(f"Best_prompt_ids={best_prompt_ids}")
         ppq = torch.cat([best_prompt_ids, question_ids], dim=1)
+        ppqa = torch.cat([ppq, answer_ids], dim=1)
 
         # check if we have the correct answer
         with torch.no_grad(): 
-            ppq_logits = model(ppq).logits
-        answer_logits = ppq_logits[:, -1, :]
-        answer_pred = answer_logits.argmax()
-        new_loss = torch.nn.functional.cross_entropy(answer_logits, answer_ids[0]).item()
+            ppqa_logits = model(ppqa).logits
+        answer_logits = ppqa_logits[:, -(answer_len+1):-1, :]
+        answer_pred = answer_logits.argmax(-1)
+        new_loss = torch.nn.functional.cross_entropy(answer_logits.cuda()[0, :, :], answer_ids[0, :]).item()
         if verbose:
             print("New loss: ", new_loss)
-            print("Predicted answer: ", answer_pred.item())
-            print("Desired answer: ", answer_ids.item())
-        if answer_pred == answer_ids[0]:
+            print("Predicted answer: ", answer_pred)
+            print("Desired answer: ", answer_ids)
+
+        if (answer_pred == answer_ids).sum().item() == answer_len:
             if verbose:
                 print(f"Found correct answer at prompt length {i}!")
             return_dict['optimal_prompt'] = ppq[:, :i].tolist()

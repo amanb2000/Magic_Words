@@ -111,7 +111,7 @@ else:
 
 # Get the question-answer pair
 question = "What is the meaning of life? "
-answer = "42"
+answer = "42 and change"
 
 print("\nQUESTION: ", question)
 print("ANSWER: ", answer, "\n")
@@ -120,9 +120,9 @@ question_ids = tokenizer.encode(question, return_tensors="pt").to(model.device)
 answer_ids = tokenizer.encode(answer, return_tensors="pt").to(model.device)
 
 if not (answer_ids.shape[0] == answer_ids.shape[1] == 1): # must be only 1 answer token!
-    print(f"[WARNING] Answer {answer} does not correspond to a single token (encoded = {answer_ids})")
-    print(f"[WARNING] Cutting off answer_ids at the first token.")
-    answer_ids = answer_ids[:, 1:2]
+    print(f"[WARNING] Answer `{answer}` does not correspond to a single token (encoded = {answer_ids})")
+    # print(f"[WARNING] Cutting off answer_ids at the first token.")
+    # answer_ids = answer_ids[:, 1:2]
     answer = tokenizer.decode(answer_ids[0].tolist())
     print("[WARNING] New answer: ", answer, "\tAnswer ids: ", answer_ids)
 
@@ -135,7 +135,7 @@ print("Question ids: ", question_ids)
 print("Answer ids: ", answer_ids)
 
 # Call backoff hack on the question-answer pair
-return_dict = backoff_hack_qa_ids(question_ids, answer_ids, model, tokenizer)
+return_dict = backoff_hack_qa_ids(question_ids, answer_ids, model, tokenizer, greedy_lengths = [], gcg_lengths=[8, 12, 20, 30])
 print("Return dictionary: ", return_dict)
 
 optimal_prompt_str = tokenizer.batch_decode(return_dict['optimal_prompt'])[0]
