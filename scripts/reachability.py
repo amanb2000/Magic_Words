@@ -74,7 +74,7 @@ def load_input_df(df_path):
     # ensure type of answer is str
     input_df['answer'] = input_df['answer'].astype(str)
     # ensure type of answer_ids is int
-    input_df['answer_ids'] = input_df['answer_ids'].astype(int)
+    input_df['answer_ids'] = input_df['answer_ids'].apply(lambda x: eval(x))
 
     return input_df
 
@@ -157,7 +157,6 @@ def compute_reachability(input_df, model, tokenizer, blacklist,
             print(f"\n\nRow {i}: {row['question']}")
             print(f"Answer: {row['answer']}")
             print(f"Answer ids: {row['answer_ids']}")
-
         # First we run the base model to get the base loss. 
         # We will also check if the base model gets the correct answer. 
         # If it does, we can stop right here. 
@@ -165,13 +164,19 @@ def compute_reachability(input_df, model, tokenizer, blacklist,
         # row['question_ids'] is a list of ints.
         # row['answer_ids'] is an int.
         assert type(row['question_ids']) == list
-        assert type(row['answer_ids']) == int
+        assert type(row['answer_ids']) == int or type(row['answer_ids']) == list
 
         question_ids = torch.tensor(row['question_ids'], dtype=torch.int64).unsqueeze(0) 
-        answer_ids = torch.tensor([row['answer_ids']], dtype=torch.int64).unsqueeze(0)
+
+        if type(row['answer_ids']) == int: 
+            answer_ids = torch.tensor([row['answer_ids']], dtype=torch.int64).unsqueeze(0)
+            answer_len = 1
+        else:
+            answer_ids = torch.tensor(row['answer_ids'], dtype=torch.int64).unsqueeze(0)
+            answer_len = len(row['answer_ids'])
 
         assert question_ids.shape == (1, len(row['question_ids']))
-        assert answer_ids.shape == (1, 1)
+        assert answer_ids.shape == (1, answer_len)
 
         # ensure ids are on the same device as the model 
         question_ids = question_ids.to(model.device)
