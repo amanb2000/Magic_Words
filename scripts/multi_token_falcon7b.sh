@@ -24,25 +24,15 @@ python3 scripts/reachability.py \
     --input_file $BASE_PATH$INPUT_CSV \
     --output_file $BASE_PATH$OUTPUT_CSV \
     --model $MODEL_NAME \
-    --greedy_lengths 1 \
-    --gcg_lengths 64 \
+    --greedy_lengths 1 2 3 \
+    --gcg_lengths 4 8 16 32 64 \
     --worker_num $1 \
     --verbose \
     --num_workers $2 
 
-# python3 scripts/reachability.py \
-#     --input_file $BASE_PATH$INPUT_CSV \
-#     --output_file $BASE_PATH$OUTPUT_CSV \
-#     --model $MODEL_NAME \
-#     --greedy_lengths 1 2 3 \
-#     --gcg_lengths 4 8 16 32 64 \
-#     --worker_num $1 \
-#     --verbose \
-#     --num_workers $2 
+curl -X POST -H "Content-Type: application/json" -d "{\"Worker\": \"$(cat ~/WHOAMI)\", \"Name\":\"$OUTPUT_CSV\"}" https://maker.ifttt.com/trigger/finished_experiment/json/with/key/$IFTTT_KEY
 
-# curl -X POST -H "Content-Type: application/json" -d "{\"Worker\": \"$(cat ~/WHOAMI)\", \"Name\":\"$OUTPUT_CSV\"}" https://maker.ifttt.com/trigger/finished_experiment/json/with/key/$IFTTT_KEY
-
-# git pull
-# git add $BASE_PATH$OUTPUT_CSV
-# git commit -m "[$(cat ~/WHOAMI)] Add $BASE_PATH$OUTPUT_CSV"
-# git push
+git pull
+git add $BASE_PATH$OUTPUT_CSV
+git commit -m "[$(cat ~/WHOAMI)] Add $BASE_PATH$OUTPUT_CSV"
+git push
