@@ -10,6 +10,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 import pdb
 
 model_name = "meta-llama/Meta-Llama-3-8B"
+skip_norm = False
 layer_num = 3
 
 print(f"\nLoading model {model_name}...")
@@ -26,7 +27,10 @@ x_0 = "I am become death, destroyer of worlds."
 x_0_ids = tokenizer.encode(x_0, return_tensors="pt").to(device)
 # get the activations 
 with torch.no_grad():
-    outputs = model(x_0_ids, output_hidden_states=True)
+    # skip_norm=True triggers custom debug code to prevent the final normalization 
+    # layer that norms over all the hidden states. This will let us compare the 
+    # output of a single layer with the activations in the model. 
+    outputs = model(x_0_ids, output_hidden_states=True, skip_norm=skip_norm)
 print("Done! Outputs keys: ", outputs.keys())
 
 
@@ -67,8 +71,38 @@ print("Done!\n\n")
 print("Running the outputs['hidden_states'][layer_num] thru the attn_head and layer...")
 print(f"\tShape of hidden_states: {outputs['hidden_states'][layer_num].shape}")
 
-attn_head_out = attn_head(outputs['hidden_states'][layer_num], output_attentions=True, debug=True) #NOTE: debug is a custom thing I added to the forward function in the transformers lib/ files.
-layer_out = layer(outputs['hidden_states'][layer_num], output_attentions=True)
+with torch.no_grad():
+    attn_head_out, attn_weights_attn, past_kv = attn_head(outputs['hidden_states'][layer_num], 
+                                                        output_attentions=True, 
+                                                        debug=False) #NOTE: debug is a custom thing I added to the forward function in the transformers lib/ files.
+    layer_out, attn_weights_layer = layer(outputs['hidden_states'][layer_num], output_attentions=True)
+    # running model.model.norm() -- function owned by LlamaModel --
+    #  on the layer_out, which is apparently what happens to all hidden layers 
+    # NOTE: The model.model.norm function is a LlamaRMSNorm which aggregates 
+    # over all the hidden states, AFTER they are computed. So we won't get the 
+    # exact same output in a single pass, because the norm output depends on 
+    # all the hidden layer values. 
+    #
+    # I am satisfied, though, that we are genuinely getting the right output 
+    # from the attention and the layer. 
+    layer_out = model.model.norm(layer_out)
+print(f"\tShape of attn_head_out: {attn_head_out.shape}")
+print(f"\tShape of layer_out: {layer_out.shape}")
+print(f"\tShape of attn_weights_attn: {attn_weights_attn.shape}")
+print(f"\tShape of attn_weights_layer: {attn_weights_layer.shape}")
+
+# test to see if layer_out all close with outputs['hidden_states'][layer_num+1]
+print("\n\nTesting if layer_out is close to outputs['hidden_states'][layer_num+1]...")
+all_close = torch.allclose(layer_out, outputs['hidden_states'][layer_num+1], atol=1e-2)
+print(f"\tAll close? {all_close}")
+print(f"Per-token norms in layer_out: ", torch.linalg.vector_norm(layer_out, dim=-1))
+print(f"Per-token norms in outputs['hidden_states'][layer_num+1]: ", 
+      torch.linalg.vector_norm(outputs['hidden_states'][layer_num+1], dim=-1))
+print(f"Per-token norm in attention output: ", torch.linalg.vector_norm(attn_head_out, dim=-1))
+pdb.set_trace()
+
+
+print("Done!\n\n")
 
 
 
