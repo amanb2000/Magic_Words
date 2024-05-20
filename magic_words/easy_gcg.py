@@ -174,6 +174,110 @@ def easy_gcg_qa_ids(question_ids:torch.Tensor,
 
     return prompt_ids
 
+
+def stochastic_easy_gcg_qa_ids(question_ids: list[torch.Tensor],
+                               answer_ids: list[torch.Tensor],
+                               num_tokens: int,
+                               model,
+                               tokenizer,
+                               top_k,
+                               batch_size=768,
+                               num_iters=34,
+                               grad_batch_size=1,
+                               max_parallel=1000,
+                               init_prompt_ids: torch.Tensor = None,
+                               blacklist=[]):
+    """
+    Optimizes a prompt of length `num_tokens` to solve
+    \arg\max_{prompt_ids} P_{model}(answer_ids | prompt_ids + question_ids)
+    using stochastic gradients over the dataset.
+
+    Args:
+        question_ids (list[torch.Tensor] each of shape [1, num_question_ids]):
+            Token sequence tensors specifying each question in the dataset (ignored in loss computation).
+        answer_ids (list[torch.Tensor] each of shape [1, num_answer_ids]):
+            Token sequence tensors specifying each answer in the dataset (we optimize these in loss computation).
+        num_tokens (int):
+            Number of tokens in `prompt_ids` to optimize.
+        model: Huggingface causal LLM.
+        tokenizer: tokenizer for the model.
+        top_k (int): number of top-k swaps to explore for each token in the prompt.
+        batch_size (int): batch size for exploring promising token swaps.
+        num_iters (int): number of iterations to run GCG for.
+        max_parallel (int): maximum number of tokens to test in parallel.
+        init_prompt_ids: [1, num_tokens] tensor of token ids to start with.
+        blacklist: list[int] of token ids to never apply in the swap.
+        grad_batch_size (int): How many question-answer examples should we aggregate the gradients of prompt_ids over before making the swaps?
+
+    Returns the optimized `prompt_ids` tensor (shape [1, num_tokens]).
+    """
+    assert len(question_ids) == len(answer_ids)
+    dataset_size = len(question_ids)
+
+    # Initialize the prompt
+    prompt_ids = instantiate_prompt(model, tokenizer, blacklist, num_tokens)
+    print("Initial prompt: ", tokenizer.decode(prompt_ids[0].tolist()))
+
+    if init_prompt_ids is not None:
+        if init_prompt_ids.shape[1] > num_tokens:
+            init_prompt_ids = init_prompt_ids[:, -num_tokens:]
+        elif init_prompt_ids.shape[1] < num_tokens:
+            prompt_ids[0, -init_prompt_ids.shape[1]:] = init_prompt_ids[0, :]
+
+    # Compute the future mask for each question-answer pair
+    future_masks = [get_future_mask(q_ids, a_ids, model) for q_ids, a_ids in zip(question_ids, answer_ids)]
+
+    # Main GCG loop
+    pbar = tqdm(range(num_iters))
+    for iteration in pbar:
+        # Initialize the gradients tensor
+        grads_vocab_size = model.model.embed_tokens.weight.shape[0]
+        grads = torch.zeros_like(prompt_ids.unsqueeze(-1)).repeat(1, 1, grads_vocab_size).double()
+
+        # Compute gradients over batches of question-answer pairs
+        for i in range(grad_batch_size):
+            idx = np.random.randint(0, dataset_size)
+            q_ids, a_ids = question_ids[idx], answer_ids[idx]
+            future_mask = future_masks[idx].to(model.device)
+
+            # Compute gradients for the current example
+            q_ids = q_ids.to(model.device)
+            a_ids = a_ids.to(model.device)
+            
+            example_grads, _ = get_prompt_grads(model, prompt_ids, q_ids, a_ids, future_mask)
+            pdb.set_trace()
+            grads += example_grads
+
+        # Average the gradients
+        grads /= grad_batch_size
+
+        # Set the gradients of the blacklist tokens to +inf
+        grads[:, :, blacklist] = float('inf')
+
+        # Get the top_k most promising swaps for each token
+        X = (-grads).topk(top_k, dim=-1).indices
+
+        alt_prompt_ids = get_alt_prompt_ids(prompt_ids, X, batch_size)
+
+        # Compute scores for alternative prompts
+        alt_scores = batch_compute_score_dataset(alt_prompt_ids,
+                                                 question_ids,
+                                                 answer_ids,
+                                                 model,
+                                                 tokenizer,
+                                                 future_masks,
+                                                 max_parallel=max_parallel,
+                                                 show_progress=False)
+
+        # Find the best alternative prompt
+        best_idx = np.argmin(alt_scores)
+        prompt_ids = alt_prompt_ids[best_idx, :].unsqueeze(0)
+
+    return prompt_ids
+
+
+
+
 def get_alt_prompt_ids(prompt_ids,
                        X, 
                        batch_size):
