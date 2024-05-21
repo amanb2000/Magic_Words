@@ -1,4 +1,4 @@
-""" Code for `batch_compute_score` function. """
+""" Code for `batch_compute_score` and `batch_compute_dataset` functions. """
 
 import torch 
 from tqdm import tqdm
@@ -70,3 +70,101 @@ def batch_compute_score(message_ids:torch.Tensor,
     all_future_losses = np.concatenate(future_losses, axis=0)
 
     return all_future_losses
+
+@torch.no_grad()
+def batch_compute_score_dataset(prompt_ids, 
+                                question_ids_list, 
+                                answer_ids_list, 
+                                model, 
+                                tokenizer, 
+                                max_parallel=100,
+                                show_progress=True): 
+    """ Given a list of question_ids and answer_ids, compute the score of 
+    a prompt `prompt_ids` on the dataset. 
+
+    Args: 
+
+    prompt_ids: tensor of shape [1, num_prompt_tokens]
+    question_ids_list: list of tensors of shape [1, num_question_tokens]
+    answer_ids_list: list of tensors of shape [1, num_answer_tokens]
+    model: Huggingface causal LLM
+    tokenizer: Huggingface tokenizer
+    max_parallel: maximum number of parallel predictions to make at once
+    show_progress: Whether to show a progress bar.
+    """
+    num_questions = len(question_ids_list)
+    num_answers = len(answer_ids_list)
+    assert num_questions == num_answers
+
+    # ensure that each question, answer is a tensor of shape [1, num_tokens]
+    max_qa_len=-1
+    for i in range(num_questions): 
+        assert question_ids_list[i].shape[0] == 1
+        assert answer_ids_list[i].shape[0] == 1
+        if question_ids_list[i].shape[1] + answer_ids_list[i].shape[1] + prompt_ids.shape[1] > max_qa_len: 
+            max_qa_len = question_ids_list[i].shape[1] + answer_ids_list[i].shape[1] + prompt_ids.shape[1]
+        assert len(question_ids_list[0].shape) == 2
+        assert len(answer_ids_list[0].shape) == 2
+    if tokenizer.pad_token_id is None: 
+        tokenizer.pad_token_id = tokenizer.eos_token_id
+
+    # create a dataset with `input_ids` = prompt_ids + question_ids + answer_ids 
+    # and `labels` = [-100, -100, ..., answer_ids], padding to max length, 
+    # including positional codes and attention mask. 
+
+    # Create input IDs and labels
+    prompt_ids = prompt_ids.to(model.device)
+    input_ids = []
+    labels = []
+    for i in range(num_questions):
+        question_ids = question_ids_list[i].to(model.device)
+        answer_ids = answer_ids_list[i].to(model.device)
+        
+        # Concatenate prompt IDs, question IDs, and answer IDs
+        # Shape: [1, num_prompt_tokens + num_question_tokens + num_answer_tokens]
+        concat_ids = torch.cat((prompt_ids, question_ids, answer_ids), dim=1)
+        
+        # Create labels: -100 for prompt and question, actual answer IDs for answer
+        # Shape: [1, num_prompt_tokens + num_question_tokens + num_answer_tokens]
+        label = torch.full_like(concat_ids, -100)
+        label[0, -answer_ids.shape[1]:] = answer_ids
+
+        # Pad the concatenated IDs and labels to max_qa_len
+        concat_ids = torch.nn.functional.pad(concat_ids, (0, max_qa_len - concat_ids.shape[1]), value=tokenizer.pad_token_id)
+        label = torch.nn.functional.pad(label, (0, max_qa_len - label.shape[1]), value=-100)
+        
+        input_ids.append(concat_ids)
+        labels.append(label)
+    
+    # concat input_ids into a single tensor on dim=0
+    input_ids = torch.cat(input_ids, dim=0) # shape [num_questions, max_qa_len]
+    labels = torch.cat(labels, dim=0)
+
+    # Create attention mask: 1 for non-padding tokens, 0 for padding tokens
+    # Shape: [num_questions, max_qa_len]
+    attention_mask = torch.tensor(input_ids != tokenizer.pad_token_id, dtype=torch.long)
+
+    
+    # Compute scores in batches
+    scores = []
+    num_batches = (num_questions + max_parallel - 1) // max_parallel
+    for i in tqdm(range(num_batches), disable=not show_progress):
+        start = i * max_parallel
+        end = min((i + 1) * max_parallel, num_questions)
+        
+        batch_input_ids = input_ids[start:end, :].to(model.device)
+        batch_attention_mask = attention_mask[start:end, :].to(model.device)
+        batch_labels = labels[start:end, :].to(model.device)
+        
+        # Forward pass
+        outputs = model(input_ids=batch_input_ids, attention_mask=batch_attention_mask, labels=batch_labels)
+        
+        # Extract loss
+        loss = outputs.loss
+        
+        scores.append(loss.item() * (end-start)/num_questions)
+    
+    # Compute average score
+    avg_score = sum(scores)
+    
+    return avg_score

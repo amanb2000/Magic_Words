@@ -33,11 +33,17 @@ def parse_args():
     parser.add_argument("--dataset", default="datasets/squad_train_v2.0.jsonl", help="Path to JSON file containing question-answer pairs.")
     parser.add_argument("--out_dir", default="None", help="Path to directory to save optimized prompts and logs.")
     parser.add_argument("--model", default="meta-llama/Meta-Llama-3-8B-Instruct", help="HuggingFace model name.")
-    parser.add_argument("--k", type=int, default=20, help="Length of prompt to optimize (defualt=20).")
-    parser.add_argument("--top_k", type=int, default=128, help="GCG parameter for number of swaps to consider.")
-    parser.add_argument("--batch_size", type=int, default=768, help="GCG parameter for batch size for number of active prompts.")
-    parser.add_argument("--num_iters", type=int, default=100, help="GCG parameter for number of stochastic local search iterations.")
-    parser.add_argument("--grad_batch_size", type=int, default=4, help="Number of training examples to use for each gradient update.")
+    parser.add_argument('--max_parallel', default=100, type=int, help="Maximum number of parallel predictions to make at once (default=100).")
+    parser.add_argument("--k", type=int, default=20, 
+                        help="Length of prompt to optimize (default=20).")
+    parser.add_argument("--top_k", type=int, default=128, 
+                        help="GCG parameter for number of swaps to consider (default=128).")
+    parser.add_argument("--batch_size", type=int, default=768, 
+                        help="GCG parameter for batch size for number of active prompts (default=768).")
+    parser.add_argument("--num_iters", type=int, default=100, 
+                        help="GCG parameter for number of stochastic local search iterations (default=100).")
+    parser.add_argument("--grad_batch_size", type=int, default=4, 
+                        help="Number of training examples to use for each gradient computation for swaps (default=4).")
     return parser.parse_args()
 
 def load_dataset(dataset_path):
@@ -57,6 +63,10 @@ def make_list_of_tensor_dataset(str_dataset, tokenizer):
         question = item["question"]
         answer = item["answer"]
         context = item["context"]
+
+        # if context is not null, prepend to question 
+        if context != "" and context is not None:
+            question = context + " Question: " + question + " Answer: "
         
         question_ids = tokenizer.encode(question, add_special_tokens=False, return_tensors="pt")
         answer_ids = tokenizer.encode(answer, add_special_tokens=False, return_tensors="pt")
@@ -72,12 +82,19 @@ def make_list_of_tensor_dataset(str_dataset, tokenizer):
     
     return tensor_dataset
 
-def optimize_prompt(dataset, out_dir, model, tokenizer, k, top_k, batch_size, num_iters, grad_batch_size):
+def optimize_prompt(dataset, out_dir, model, tokenizer, 
+                    k, 
+                    top_k, 
+                    batch_size, 
+                    num_iters, 
+                    grad_batch_size, 
+                    max_parallel=100):
     """
     Optimizes a prompt using the stochastic_easy_gcg_qa_ids function.
 
     Args:
         dataset (list[dict]): A list of dictionaries with keys "question_ids", "answer_ids", "context_ids".
+            Each should be a list of tensors each of shape [1, num_tokens].
         out_dir (str): Path to the directory to save the optimized prompt and logs.
         model: Huggingface causal LLM.
         k (int): Length of the prompt to optimize.
@@ -102,7 +119,8 @@ def optimize_prompt(dataset, out_dir, model, tokenizer, k, top_k, batch_size, nu
         top_k=top_k,
         batch_size=batch_size,
         num_iters=num_iters,
-        grad_batch_size=grad_batch_size
+        grad_batch_size=grad_batch_size, 
+        max_parallel=max_parallel
     )
 
     # Save the optimized prompt to a file
@@ -132,6 +150,8 @@ def main():
     print(f"Loading model {args.model}...")
     model = AutoModelForCausalLM.from_pretrained(args.model, device_map="auto")
     tokenizer = AutoTokenizer.from_pretrained(args.model)
+    # 16 bits 
+    model.half()
     
     # Load the dataset
     print(f"Loading string dataset from {args.dataset}...")
@@ -151,7 +171,8 @@ def main():
         top_k=args.top_k,
         batch_size=args.batch_size,
         num_iters=args.num_iters,
-        grad_batch_size=args.grad_batch_size
+        grad_batch_size=args.grad_batch_size, 
+        max_parallel=args.max_parallel
     )
 
 if __name__ == "__main__":

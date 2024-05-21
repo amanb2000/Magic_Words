@@ -15,7 +15,7 @@ from tqdm import tqdm
 import numpy as np
 import pdb
 
-from magic_words import batch_compute_score, compute_score
+from magic_words import batch_compute_score, compute_score, batch_compute_score_dataset
 from .search_limiters import SearchLimiter
 
 from magic_words.utils import _naive_ingest
@@ -235,6 +235,7 @@ def stochastic_easy_gcg_qa_ids(question_ids: list[torch.Tensor],
         grads = torch.zeros_like(prompt_ids.unsqueeze(-1)).repeat(1, 1, grads_vocab_size).double()
 
         # Compute gradients over batches of question-answer pairs
+        print(f"Computing gradients over grad_batch_size={grad_batch_size}")
         for i in range(grad_batch_size):
             idx = np.random.randint(0, dataset_size)
             q_ids, a_ids = question_ids[idx], answer_ids[idx]
@@ -245,7 +246,6 @@ def stochastic_easy_gcg_qa_ids(question_ids: list[torch.Tensor],
             a_ids = a_ids.to(model.device)
             
             example_grads, _ = get_prompt_grads(model, prompt_ids, q_ids, a_ids, future_mask)
-            pdb.set_trace()
             grads += example_grads
 
         # Average the gradients
@@ -255,22 +255,29 @@ def stochastic_easy_gcg_qa_ids(question_ids: list[torch.Tensor],
         grads[:, :, blacklist] = float('inf')
 
         # Get the top_k most promising swaps for each token
+        # X has shape [1, num_prompt_ids, ]
         X = (-grads).topk(top_k, dim=-1).indices
 
+        # alt_prompt_ids has shape [batch_size, num_prompt_tokens]
         alt_prompt_ids = get_alt_prompt_ids(prompt_ids, X, batch_size)
 
         # Compute scores for alternative prompts
-        alt_scores = batch_compute_score_dataset(alt_prompt_ids,
-                                                 question_ids,
-                                                 answer_ids,
-                                                 model,
-                                                 tokenizer,
-                                                 future_masks,
-                                                 max_parallel=max_parallel,
-                                                 show_progress=False)
+        print(f"\nComputing scores for each alternative prompt alt_prompt_ids.shape = {alt_prompt_ids.shape}")
+        alt_scores = []
+        for i in range(alt_prompt_ids.shape[1]):
+            prompt_ids_i = alt_prompt_ids[i, :].unsqueeze(0)
+            alt_scores_i = batch_compute_score_dataset(prompt_ids_i,
+                                                    question_ids,
+                                                    answer_ids,
+                                                    model,
+                                                    tokenizer,
+                                                    max_parallel=max_parallel,
+                                                    show_progress=True)
+            alt_scores.append(alt_scores_i)
 
         # Find the best alternative prompt
         best_idx = np.argmin(alt_scores)
+        print(f"[Iteration {iteration}] Best idx: {best_idx} with loss {alt_scores[best_idx]}\n\n")
         prompt_ids = alt_prompt_ids[best_idx, :].unsqueeze(0)
 
     return prompt_ids
@@ -315,6 +322,7 @@ def get_embedding_weights(model):
         embed_weights = model.model.embed_tokens.weight
     else: 
         # Exception: we don't know how to get the embedding weights for this model
+        pdb.set_trace()
         print(model)
         raise Exception(f"Unknown model type: {type(model)}")
 
