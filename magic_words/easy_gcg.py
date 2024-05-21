@@ -227,6 +227,8 @@ def stochastic_easy_gcg_qa_ids(question_ids: list[torch.Tensor],
     # Compute the future mask for each question-answer pair
     future_masks = [get_future_mask(q_ids, a_ids, model) for q_ids, a_ids in zip(question_ids, answer_ids)]
 
+    optim_hist=[] # to store prompts and losses along the way
+
     # Main GCG loop
     pbar = tqdm(range(num_iters))
     for iteration in pbar:
@@ -280,7 +282,13 @@ def stochastic_easy_gcg_qa_ids(question_ids: list[torch.Tensor],
         print(f"[Iteration {iteration}] Best idx: {best_idx} with loss {alt_scores[best_idx]}\n\n")
         prompt_ids = alt_prompt_ids[best_idx, :].unsqueeze(0)
 
-    return prompt_ids
+        optim_hist.append({
+            "prompt_ids": prompt_ids.tolist(),
+            "train_loss": alt_scores[best_idx], 
+            "iteration": iteration
+        })
+
+    return prompt_ids, optim_hist
 
 
 

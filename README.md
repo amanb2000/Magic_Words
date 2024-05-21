@@ -44,8 +44,8 @@ python3 scripts/sgcg.py \
     --dataset datasets/100_squad_train_v2.0.jsonl \
     --model meta-llama/Meta-Llama-3-8B-Instruct \
     --k 20 \
-    --max_parallel 10 \
-    --grad_batch_size 20 
+    --max_parallel 30 \
+    --grad_batch_size 50
     
 ```
 

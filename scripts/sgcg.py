@@ -110,7 +110,7 @@ def optimize_prompt(dataset, out_dir, model, tokenizer,
     answer_ids = [item["answer_ids"] for item in dataset]
 
     # Call the stochastic_easy_gcg_qa_ids function to optimize the prompt
-    prompt_ids = magic_words.stochastic_easy_gcg_qa_ids(
+    prompt_ids, optim_hist = magic_words.stochastic_easy_gcg_qa_ids(
         question_ids=question_ids,
         answer_ids=answer_ids,
         num_tokens=k,
@@ -124,10 +124,21 @@ def optimize_prompt(dataset, out_dir, model, tokenizer,
     )
 
     # Save the optimized prompt to a file
-    prompt_file = os.path.join(out_dir, "optimized_prompt.txt")
+    prompt_file = os.path.join(out_dir, "optimized_prompt_text.txt")
     with open(prompt_file, "w") as f:
-        prompt_text = model.tokenizer.decode(prompt_ids[0].tolist())
+        prompt_text = tokenizer.decode(prompt_ids[0].tolist())
         f.write(prompt_text)
+
+    # save the list of prompt_ids 
+    prompt_ids_file = os.path.join(out_dir, "optimized_prompt_ids.json")
+    with open(prompt_ids_file, "w") as f:
+        json.dump(prompt_ids.tolist(), f)
+    
+    # save the optimization history 
+    optim_hist_file = os.path.join(out_dir, "optimization_history.json")
+    with open(optim_hist_file, "w") as f:
+        json.dump(optim_hist, f)
+
 
     return prompt_ids
 
