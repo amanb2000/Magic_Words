@@ -45,7 +45,8 @@ python3 scripts/sgcg.py \
     --model meta-llama/Meta-Llama-3-8B-Instruct \
     --k 20 \
     --max_parallel 30 \
-    --grad_batch_size 50
+    --grad_batch_size 50 \
+    --num_iters 30
     
 ```
 
