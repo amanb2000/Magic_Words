@@ -1,0 +1,2 @@
+Here is the current prompt: "{}" Here are some examples of how it failed: "{}" Please generate a new prompt that improves it.
+
