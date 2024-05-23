@@ -328,6 +328,8 @@ def get_embedding_weights(model):
         embed_weights = model.transformer.wte.weight # [vocab, hidden_size]
     elif str(type(model)).startswith("<class 'transformers.models.llama.modeling_llama.LlamaForCausalLM"): 
         embed_weights = model.model.embed_tokens.weight
+    elif str(type(model)).startswith("<class 'transformers.models.mistral.modeling_mistral.MistralForCausalLM"):
+        embed_weights = model.model.embed_tokens.weight
     else: 
         # Exception: we don't know how to get the embedding weights for this model
         pdb.set_trace()
