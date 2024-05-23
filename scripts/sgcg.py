@@ -62,7 +62,10 @@ def make_list_of_tensor_dataset(str_dataset, tokenizer):
     for item in tqdm(str_dataset):
         question = item["question"]
         answer = item["answer"]
-        context = item["context"]
+        if "context" in item.keys(): 
+            context = item["context"]
+        else: 
+            context = ""
 
         # if context is not null, prepend to question 
         if context != "" and context is not None:
