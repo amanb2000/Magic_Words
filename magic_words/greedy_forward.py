@@ -1,0 +1,224 @@
+import torch 
+import numpy 
+from tqdm import tqdm
+import pdb 
+
+
+
+def get_batch_logits(model, tokenizer, x_0_ids, alt_prompt_ids, max_parallel=100): 
+    """
+    Get the logits for a batch of input_ids while not exceeding 
+    max_parallel. 
+
+    x_0_ids: [1, num_toks] imposed state sequence 
+    alt_prompt_ids: [num_prompts, num_toks] alternative prompt sequences to prepend
+
+    Returns: 
+    logits_list: List of logits for each prompt in alt_prompt_ids (only the final token logits)
+    """
+
+    logits_list = []
+
+    num_prompts = alt_prompt_ids.shape[0]
+    num_batches = ((num_prompts-1) // max_parallel) + 1
+
+
+    for batch in tqdm(range(num_batches)): 
+        start_idx = batch * max_parallel
+        end_idx = min((batch+1) * max_parallel, num_prompts)
+
+        alt_prompt_ids_batch = alt_prompt_ids[start_idx:end_idx, :]
+
+        # concatenate with repeated x_0_ids 
+        num_in_batch = alt_prompt_ids_batch.shape[0]
+        input_ids_batch = torch.cat([alt_prompt_ids_batch,
+            x_0_ids.repeat(num_in_batch, 1).to(model.device)], dim=1)
+
+        with torch.no_grad(): 
+            attention_mask = (input_ids_batch != tokenizer.pad_token_id).float()
+            input_ids_batch = input_ids_batch.to(model.device)
+            attention_mask = attention_mask.to(model.device)
+            logits = model(input_ids_batch, attention_mask=attention_mask).logits
+            logits_list.append(logits[:, -1:, :])
+    # concatenate logits_list on dimension 0 
+    logits_list = torch.cat(logits_list, dim=0)
+    
+    return logits_list
+
+def compute_reachability_loss(logits, R_t, push=1.0, pull=1.0): 
+    """
+    Computes -CE_loss(logits, unif(R_t)) + H(logits[~R_t])
+
+    logits: [num_prompts, 1, vocab_size=probs]
+
+    Currently only works for single-token answers/reachable sets
+    """
+    # get the unreached logits 
+    reached_logits_unif = [1.0 if i in R_t else 0.0 for i in range(logits.shape[-1])]
+    reached_logits_unif = torch.tensor(reached_logits_unif, dtype=torch.float).to(logits.device)
+    # normalize 
+    reached_logits_unif = reached_logits_unif / reached_logits_unif.sum()
+    # add a batch dimension
+    reached_logits_unif = reached_logits_unif.unsqueeze(0) # [1, vocab_size]
+    # repeat for num_prompts = logits.shape[0]
+    reached_logits_unif = reached_logits_unif.repeat(logits.shape[0], 1)
+
+    # compute the cross entropy loss, indexing logits[:, 0, :]
+    push_losses = -push*torch.nn.functional.cross_entropy(logits[:, 0, :], reached_logits_unif, reduction='none') # minimize this -- make it very negative -> far from reached set.
+    # push_losses has shape [num_prompts]
+
+    # compute the entropy of the logits[~R_t]
+    # we also want to compute add a term corresponding to the entropy of 
+    # the logits[unreached_logits]. We want this to be a sharply peaked 
+    # distribution, meaning we want to minimize its entropy H(). 
+    unreached_idx = [i if i not in R_t else -1 for i in range(logits.shape[-1])]
+    unreached_idx = [i for i in unreached_idx if i != -1]
+    # use this to grab the unreached logits
+    unreached_logits = logits[:,0, unreached_idx] # [num_prompts, num_unreached_logits]
+    # softmax it 
+    unreached_probs = torch.nn.functional.softmax(unreached_logits, dim=-1) # [num_prompts, num_unreached_logits]
+    # compute entropy -- want to minimize this
+    entropy = -torch.sum(unreached_probs * torch.log(unreached_probs + 1e-8), dim=-1) # [num_prompts]
+
+    pull_losses = pull*entropy
+
+    return push_losses + pull_losses
+
+
+
+
+def update_R_U_t(R_t, U_t, reached, U):
+    """
+    Updates R_t, U_t based on reached[num_prompt] and 
+    U[num_prompt, num_toks]
+    """
+    cnt=0
+    for r in tqdm(reached.tolist()): 
+        if r not in R_t:
+            R_t.add(r)
+            U_t.append(U[cnt, :].cpu().tolist())
+        cnt+=1
+
+    return R_t, U_t
+
+def update_pool_scores(model, tokenizer, x_0_ids, pool, R_t, max_parallel, push=1.0, pull=1.0): 
+    """
+    Updates the pool scores based on the new reachable set R_t
+    """
+    pool_scores = []
+
+    # 1: get max prompt length in pool 
+    max_prompt_length = max([p.shape[1] for p in pool])
+    # 2: pad each prompt in the pool to max_prompt_length
+    pool_padded = [] 
+    for p in pool: 
+        pool_padded.append(torch.cat([torch.ones(1, max_prompt_length - p.shape[1], dtype=torch.long).to(model.device)*tokenizer.pad_token_id, p], dim=1))
+    # 3: concatenate all the padded prompts in the pool
+    pool_padded = torch.cat(pool_padded, dim=0)
+
+    # 4: get the logits for each prompt in the pool
+    logits = get_batch_logits(model, tokenizer, x_0_ids, pool_padded, max_parallel=max_parallel)
+    # 5: compute the reachability loss for each prompt in the pool
+    reachability_losses = compute_reachability_loss(logits, R_t, push=push, pull=pull)
+    return reachability_losses 
+
+@torch.no_grad()
+def greedy_forward_reachability(model, tokenizer, x_0, 
+                                max_prompt_length=5, 
+                                max_iters=100, 
+                                max_parallel=100, 
+                                pool_size=100):
+    """
+    Performs open-ended greedy forward reachability analysis on an LLM.
+    
+    Args:
+        model: The LLM model to analyze (e.g. GPT-2)
+        tokenizer: Tokenizer for the LLM
+        x_0: The initial state string to start reachability analysis from
+        max_prompt_length: The maximum number of tokens to allow in the control prompt 
+        max_iters: The maximum number of iterations to run the reachability analysis for
+        
+    Returns:
+    """
+    # [1, num_toks]
+    x_0_ids = tokenizer.encode(x_0, return_tensors='pt')
+
+    if tokenizer.pad_token_id is None: 
+        tokenizer.pad_token_id = tokenizer.eos_token_id
+
+
+    R_t = set()
+    U_t = []
+
+    # pool of prompts we are considering/extending back 1 token at a time
+    pool_list = []
+    pool_scores = []
+
+    # logits has shape [num_prompts, ans_toks=1, vocab_size]
+    print("Computing logits for all single-token prompts...")
+    # let U be a vocab_size x 1 shaped tensor from 0 ... vocab_size
+    # TODO: get rid of //5, this is for debugging only
+    U = torch.arange(tokenizer.vocab_size, device=model.device).unsqueeze(1)
+
+    logits = get_batch_logits(model, tokenizer, x_0_ids, U, max_parallel=max_parallel)
+    reached = logits[:, 0, :].argmax(-1) # 1-dim tensor
+    print("Done!\n")
+
+    print("Computing reachability losses for all single-token prompts...")
+    R_t, U_t = update_R_U_t(R_t, U_t, reached, U) 
+    #U_t id a set of lists, R_t is a set of ints
+    reachability_losses = compute_reachability_loss(logits, R_t)
+    # shape [num_prompts]
+
+    # get sorted idx for reachability_losses 
+    sort_idx = torch.argsort(reachability_losses)
+
+    # get the top pool_size prompts
+    for i in range(min(pool_size, sort_idx.shape[0])): 
+        pool_list.append(U[sort_idx[i], :].unsqueeze(0))
+
+    pool_scores = reachability_losses[sort_idx[:pool_size]] # [pool_size]
+
+
+    for t in range(max_iters):
+        # get the top prompt in the pool
+        top_idx = torch.argmin(pool_scores)
+        top_prompt = pool_list[top_idx] # 
+        U_ = torch.arange(tokenizer.vocab_size, device=model.device).unsqueeze(1)
+        U = torch.concat([U_, top_prompt.repeat(U_.shape[0], 1)], dim=1)
+
+        print(f"\nRound {t}: Top prompt is {tokenizer.batch_decode(top_prompt)[0]}.")
+        print("Computing logits for all single-token prompts back-extensions...")
+        logits = get_batch_logits(model, tokenizer, x_0_ids, U, max_parallel=max_parallel)
+        reached = logits[:, 0, :].argmax(-1)
+        print("Done!")
+
+        # add new reached tokens to R_t and U_t
+        print("Updating reachable set starting from size ", len(R_t))
+        R_t, U_t = update_R_U_t(R_t, U_t, reached, U) 
+        print("New reachable set size: ", len(R_t))
+
+        print("Computing scores for all new prompts...")
+        reachability_losses = compute_reachability_loss(logits, R_t)
+        print("Done!")
+
+        # update pool scores based on new reachable set
+        print("Updating pool scores with new R_t...")
+        pool_scores = update_pool_scores(model, tokenizer, x_0_ids, pool_list, R_t, max_parallel)
+        print("Done!")
+
+        # make new pool with all current pool members and all new U, reachability_losses 
+        print("Updating pool...")
+        pool_add = []
+        for i in range(U.shape[0]): 
+            pool_add.append(U[i, :].unsqueeze(0))
+        pool_list = pool_list + pool_add
+        pool_scores = torch.cat([pool_scores, reachability_losses])
+
+        # resort pool, pool_scores and cut down to pool_size
+        sort_idx = torch.argsort(pool_scores)
+        pool_list = [pool_list[i] for i in sort_idx[:pool_size]]
+        pool_scores = pool_scores[sort_idx[:pool_size]]
+        print("Done!")
+
+    return initial_prompts

@@ -18,3 +18,6 @@ from magic_words.forward_reach import get_reachable_set, forward_generate
 
 # Answer checking 
 from magic_words.get_answer import _get_answer_ids, _batch_get_answer_ids
+
+# Greedy Forward Reachability
+from magic_words.greedy_forward import greedy_forward_reachability
