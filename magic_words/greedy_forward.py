@@ -39,7 +39,7 @@ def get_batch_logits(model, tokenizer, x_0_ids, alt_prompt_ids, max_parallel=100
             input_ids_batch = input_ids_batch.to(model.device)
             attention_mask = attention_mask.to(model.device)
             logits = model(input_ids_batch, attention_mask=attention_mask).logits
-            logits_list.append(logits[:, -1:, :])
+            logits_list.append(logits[:, -1:, :].cpu())
     # concatenate logits_list on dimension 0 
     logits_list = torch.cat(logits_list, dim=0)
     
@@ -93,7 +93,7 @@ def update_R_U_t(R_t, U_t, reached, U):
     U[num_prompt, num_toks]
     """
     cnt=0
-    for r in tqdm(reached.tolist()): 
+    for r in reached.tolist():
         if r not in R_t:
             R_t.add(r)
             U_t.append(U[cnt, :].cpu().tolist())
@@ -127,7 +127,11 @@ def greedy_forward_reachability(model, tokenizer, x_0,
                                 max_prompt_length=5, 
                                 max_iters=100, 
                                 max_parallel=100, 
-                                pool_size=100):
+                                pool_size=100, 
+                                push=1.0, 
+                                pull=1.0, 
+                                frac_ext=0.01, 
+                                rand_pool=True):
     """
     Performs open-ended greedy forward reachability analysis on an LLM.
     
@@ -137,6 +141,10 @@ def greedy_forward_reachability(model, tokenizer, x_0,
         x_0: The initial state string to start reachability analysis from
         max_prompt_length: The maximum number of tokens to allow in the control prompt 
         max_iters: The maximum number of iterations to run the reachability analysis for
+        push: how much weight toward moving away from known reachable set
+        pull: how much weight toward moving toward a sharply peaked distribution over the unreachable set
+        frac_ext: what fraction of the vocabulary we randomly sample to back-extend the prompt
+        rand_pool: do we select a random entry from the pool or the max scoring entry? 
         
     Returns:
     """
@@ -182,9 +190,21 @@ def greedy_forward_reachability(model, tokenizer, x_0,
 
     for t in range(max_iters):
         # get the top prompt in the pool
-        top_idx = torch.argmin(pool_scores)
+        if not rand_pool:
+            top_idx = torch.argmin(pool_scores)
+        else: 
+            top_idx = torch.randint(0, pool_size, (1,))[0]
+
         top_prompt = pool_list[top_idx] # 
         U_ = torch.arange(tokenizer.vocab_size, device=model.device).unsqueeze(1)
+
+        if frac_ext > 0.0: 
+            # randomly sample frac_ext of the vocab to extend the prompt
+            # shuffle arange(vocab_size) and use it to index U_
+            U_ = U_[torch.randperm(U_.shape[0]), :]
+            U_ = U_[:int(frac_ext*U_.shape[0]), :]
+
+
         U = torch.concat([U_, top_prompt.repeat(U_.shape[0], 1)], dim=1)
 
         print(f"\nRound {t}: Top prompt is {tokenizer.batch_decode(top_prompt)[0]}.")
@@ -199,7 +219,7 @@ def greedy_forward_reachability(model, tokenizer, x_0,
         print("New reachable set size: ", len(R_t))
 
         print("Computing scores for all new prompts...")
-        reachability_losses = compute_reachability_loss(logits, R_t)
+        reachability_losses = compute_reachability_loss(logits, R_t, push=push, pull=pull)
         print("Done!")
 
         # update pool scores based on new reachable set
@@ -221,4 +241,4 @@ def greedy_forward_reachability(model, tokenizer, x_0,
         pool_scores = pool_scores[sort_idx[:pool_size]]
         print("Done!")
 
-    return initial_prompts
+    return R_t, U_t

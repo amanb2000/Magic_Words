@@ -71,7 +71,12 @@ class TestGreedyForward(unittest.TestCase):
                                     self.tokenizer, 
                                     x_0=x_0, 
                                     max_prompt_length=5, 
-                                    max_parallel=200,
+                                    max_parallel=100,
                                     max_iters=100, 
+                                    push=0.1, 
+                                    pull=1.0, 
+                                    frac_ext=0.5,
+                                    rand_pool=False,
+                                    pool_size=1000
                                     )
         
