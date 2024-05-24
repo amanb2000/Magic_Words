@@ -125,14 +125,32 @@ def get_prompt_divergence_grads(model, tokenizer, start_prompt, x_0, R_t):
     answer_logits = logits[:, -1, :] # [1, vocab_size]
 
     # get the unreached logits 
-    reached_logits = [1.0 if i in R_t else 0.0 for i in range(answer_logits.shape[-1])]
-    reached_logits = torch.tensor(reached_logits, dtype=torch.float).to(model.device)
+    reached_logits_unif = [1.0 if i in R_t else 0.0 for i in range(answer_logits.shape[-1])]
+    reached_logits_unif = torch.tensor(reached_logits_unif, dtype=torch.float).to(model.device)
     # normalize 
-    reached_logits = reached_logits / reached_logits.sum()
+    reached_logits_unif = reached_logits_unif / reached_logits_unif.sum()
     # add a batch dimension
-    reached_logits = reached_logits.unsqueeze(0) # [1, vocab_size]
+    reached_logits_unif = reached_logits_unif.unsqueeze(0) # [1, vocab_size]
 
-    answer_loss = -torch.nn.functional.cross_entropy(answer_logits, reached_logits) # minimize this -- make it very negative -> far from reached set.
+    answer_loss = -torch.nn.functional.cross_entropy(answer_logits, reached_logits_unif) # minimize this -- make it very negative -> far from reached set.
+
+    # we also want to compute add a term corresponding to the entropy of 
+    # the logits[unreached_logits]. We want this to be a sharply peaked 
+    # distribution, meaning we want to minimize its entropy H(). 
+    unreached_idx = [i if i not in R_t else -1 for i in range(answer_logits.shape[-1])]
+    unreached_idx = [i for i in unreached_idx if i != -1]
+    # use this to grab the unreached logits
+    unreached_logits = answer_logits[:, unreached_idx] # [1, num_unreached_logits]
+    # softmax it 
+    unreached_probs = torch.nn.functional.softmax(unreached_logits, dim=-1) # [1, num_unreached_logits]
+    # compute entropy -- want to minimize this
+    entropy = -torch.sum(unreached_probs * torch.log(unreached_probs + 1e-8), dim=-1) # [1]
+
+    # print("entropy: ", entropy)
+    # pdb.set_trace()
+
+    answer_loss += entropy.mean()
+
 
     loss = answer_loss.mean()
     loss.backward()
@@ -149,7 +167,8 @@ def get_reachable_gcg_set(x_0, model, tokenizer,
                           num_iters=34,
                           max_parallel=300, 
                           num_init_prompts = 1, 
-                          num_to_mutate = 1): 
+                          num_to_mutate = 1, 
+                          eps_e = 0.01): 
     """ Performs forward-GCG to find k reachable tokens from x_0.
 
     Args: 
@@ -166,9 +185,11 @@ def get_reachable_gcg_set(x_0, model, tokenizer,
         num_to_mutate: Number of prompts to mutate at each iteration (each gets 
         `batch_size` mutants).
     """
-    x_0 = torch.tensor([x_0], dtype=torch.long).to(model.device)
+    if len(x_0.shape) < 2:
+        x_0 = torch.tensor([x_0], dtype=torch.long).to(model.device)
+    else: 
+        x_0 = x_0.to(model.device)
     # x_0 must have shape [1, num_question_tokens]
-    assert len(x_0.shape) == 2
     assert x_0.shape[0] == 1
     assert num_prompt_tokens > 0
 
@@ -187,7 +208,7 @@ def get_reachable_gcg_set(x_0, model, tokenizer,
             reachable_df = pd.DataFrame([new_row])
         else:
             reachable_df = pd.concat([reachable_df, pd.DataFrame([new_row])], ignore_index=True)
-    print("Done. Length of ")
+    print("Done. Length of reachable_df: ", len(reachable_df))
 
 
     # initialize the reachable set
@@ -218,16 +239,16 @@ def get_reachable_gcg_set(x_0, model, tokenizer,
 
         # Now we compute the answer_ids for each of these alternate prompts
         # and add them to the reachable set if they are not already in it.
-        print("Computing answer_ids for each alt_prompt_ids...")
+        # print("Computing answer_ids for each alt_prompt_ids...")
         answer_ids = _batch_get_answer_ids(alt_prompt_ids, x_0, model, tokenizer, max_parallel=max_parallel)
-        print("Done.\n")
+        # print("Done.\n")
 
         # add the new rows to the reachable set
         # 3: ingest the answer_ids into reachable_df -- only add if `answer_ids` has 
         # not been seen before. 
         reachable_df = _naive_ingest(model, tokenizer, reachable_df, 
                                     alt_prompt_ids, answer_ids, base_logits, 
-                                    x_0, question)
+                                    x_0, question, eps_e=eps_e)
         
         # update R_t
         R_t = {x for x in reachable_df['answer_ids'].tolist()}

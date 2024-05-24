@@ -16,8 +16,8 @@ from magic_words.utils import _naive_ingest
 
 
 def _get_prompt_ids_brute_force(tokenizer): 
-    """ Gets a tensor of shape `[vocab_size, 1]` with all token ids 
-    for the model. 
+    """ Gets a tensor of shape `[vocab_size, 1]` with all token ids for the
+    model. 
     """
     prompt_ids = torch.tensor(range(tokenizer.vocab_size)).unsqueeze(-1)
     return prompt_ids

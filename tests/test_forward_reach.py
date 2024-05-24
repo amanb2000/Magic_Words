@@ -12,6 +12,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 from magic_words.forward_reach import _get_prompt_ids_brute_force
 from magic_words.forward_reach import _get_answer_ids
 from magic_words.forward_reach import _batch_get_answer_ids
+from magic_words.forward_reach import get_reachable_gcg_set
 
 
 class TestForwardReach(unittest.TestCase): 
@@ -19,9 +20,9 @@ class TestForwardReach(unittest.TestCase):
     def setUpClass(cls):
         """This is run once before all tests in this class. 
         """
-        print("\n=============================================")
-        print("=== Setting up TestScoreComputation class ===")
-        print("=============================================")
+        print("\n=========================================")
+        print("=== Setting up TestForwardReach class ===")
+        print("=========================================")
 
         # Initialize a tokenizer and model
         cls.model_name = "tiiuae/falcon-7b"
@@ -100,4 +101,31 @@ class TestForwardReach(unittest.TestCase):
         # torch allclose 
         self.assertTrue(torch.allclose(answer_ids, answer_ids_batch, atol=1e-5))
         print("Passed allclose!")
+
+    def test_get_reachable_gcg_set(self): 
+        x_0 = "What is the meaning of life?"
+        x_0_ids = self.tokenizer(x_0, return_tensors="pt")["input_ids"]
+
+        top_k = 128
+        num_prompt_tokens = 100
+        batch_size = 768
+        num_iters = 34
+        max_parallel = 300
+        num_init_prompts = 1
+        num_to_mutate = 10
+        eps_e = 0.0
+
+        reachable_gcg_set = get_reachable_gcg_set(x_0_ids, self.model, self.tokenizer, 
+                                                  top_k=top_k,
+                                                  num_prompt_tokens=num_prompt_tokens,
+                                                  batch_size=batch_size,
+                                                  num_iters=num_iters,
+                                                  max_parallel=max_parallel,
+                                                  num_init_prompts=num_init_prompts,
+                                                  num_to_mutate=num_to_mutate, 
+                                                  eps_e=eps_e)
+        pdb.set_trace()
+        print("Reachable_gcg_set shape: ", reachable_gcg_set.shape)
+        print("Reachable_gcg_set: ", reachable_gcg_set)
+        pdb.set_trace()
 

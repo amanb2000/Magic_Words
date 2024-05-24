@@ -48,7 +48,7 @@ def _naive_ingest(model, tokenizer,
         # Let's check of answer_ids[i] is in R_t. If so, we continue. 
         # generate a random number between 0 and 1
         # if it's less than eps_e, then we continue.
-        if answer_ids[i].item() in R_t and np.random.rand() > eps_e:
+        if answer_ids[i].item() in R_t and np.random.rand() < eps_e:
             continue
 
         print("\tNew answer: ", tokenizer.decode(answer_ids[i].item()))
@@ -94,7 +94,6 @@ def _naive_ingest(model, tokenizer,
                     'question_length': question_length
                     }
         # pdb.set_trace()
-        print("Comparing new_row's dtypes with reachable df: ")
         new_df = pd.DataFrame([new_row])
         # for key in new_row.keys(): 
         #     print("")
