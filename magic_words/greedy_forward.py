@@ -184,9 +184,11 @@ def greedy_forward_reachability(model, tokenizer, x_0,
         R_t: A set of reachable token ids (ints). 
         U_t: A list of 1-dimensional token ids representing prompts u that each steer to 
             one of the y in R_t.
+        Y_to_U: A dictionary mapping each reachable token id y to the prompt u that steers to it.
+        x_0_ids: A 1-dim list of token ids representing the initial state sequence.
     """
     # [1, num_toks]
-    x_0_ids = tokenizer.encode(x_0, return_tensors='pt', add_special_tokens=False)
+    x_0_ids = tokenizer.encode(x_0, return_tensors='pt', add_special_tokens=add_special_tokens)
 
     if tokenizer.pad_token_id is None: 
         tokenizer.pad_token_id = tokenizer.eos_token_id
@@ -282,4 +284,4 @@ def greedy_forward_reachability(model, tokenizer, x_0,
         pool_scores = pool_scores[sort_idx[:pool_size]]
         print("Done!")
 
-    return R_t, U_t, Y_to_U
+    return R_t, U_t, Y_to_U, x_0_ids[0, :].cpu().tolist()
