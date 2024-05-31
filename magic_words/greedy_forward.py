@@ -82,12 +82,43 @@ def compute_reachability_loss(logits, R_t, push=1.0, pull=1.0):
 
     pull_losses = pull*entropy
 
+
     return push_losses + pull_losses
 
+def batched_compute_reachability_loss(logits, R_t, push=1.0, pull=1.0, max_parallel=5000):
+    """
+    Computes -CE_loss(logits, unif(R_t)) + H(logits[~R_t]) in batches.
+    
+    logits: [num_prompts, 1, vocab_size=probs]
+    Currently only works for single-token answers/reachable sets
+    max_parallel: Maximum number of prompts to process in parallel
+    """
+    num_prompts = logits.shape[0]
+    batch_size = max_parallel
+    num_batches = (num_prompts + batch_size - 1) // batch_size
+    
+    losses = []
+    
+    with tqdm(total=num_prompts, desc="Computing reachability loss") as pbar:
+        for i in range(num_batches):
+            start_idx = i * batch_size
+            end_idx = min((i + 1) * batch_size, num_prompts)
+            
+            batch_logits = logits[start_idx:end_idx]
+            batch_losses = compute_reachability_loss(batch_logits, R_t, push, pull)
+            
+            losses.append(batch_losses)
+            
+            pbar.update(end_idx - start_idx)
+    
+    losses = torch.cat(losses, dim=0)
+    
+    return losses
 
 
 
-def update_R_U_t(R_t, U_t, reached, U):
+
+def update_R_U_t(R_t, U_t, Y_to_U, reached, U):
     """
     Updates R_t, U_t based on reached[num_prompt] and 
     U[num_prompt, num_toks]
@@ -97,9 +128,10 @@ def update_R_U_t(R_t, U_t, reached, U):
         if r not in R_t:
             R_t.add(r)
             U_t.append(U[cnt, :].cpu().tolist())
+            Y_to_U[r] = U[cnt, :].cpu().tolist()
         cnt+=1
 
-    return R_t, U_t
+    return R_t, U_t, Y_to_U
 
 def update_pool_scores(model, tokenizer, x_0_ids, pool, R_t, max_parallel, push=1.0, pull=1.0): 
     """
@@ -119,7 +151,7 @@ def update_pool_scores(model, tokenizer, x_0_ids, pool, R_t, max_parallel, push=
     # 4: get the logits for each prompt in the pool
     logits = get_batch_logits(model, tokenizer, x_0_ids, pool_padded, max_parallel=max_parallel)
     # 5: compute the reachability loss for each prompt in the pool
-    reachability_losses = compute_reachability_loss(logits, R_t, push=push, pull=pull)
+    reachability_losses = batched_compute_reachability_loss(logits, R_t, push=push, pull=pull)
     return reachability_losses 
 
 @torch.no_grad()
@@ -131,7 +163,8 @@ def greedy_forward_reachability(model, tokenizer, x_0,
                                 push=1.0, 
                                 pull=1.0, 
                                 frac_ext=0.01, 
-                                rand_pool=True):
+                                rand_pool=True, 
+                                add_special_tokens=False):
     """
     Performs open-ended greedy forward reachability analysis on an LLM.
     
@@ -145,18 +178,22 @@ def greedy_forward_reachability(model, tokenizer, x_0,
         pull: how much weight toward moving toward a sharply peaked distribution over the unreachable set
         frac_ext: what fraction of the vocabulary we randomly sample to back-extend the prompt
         rand_pool: do we select a random entry from the pool or the max scoring entry? 
+        add_special_tokens: whether to add special tokens to the prompt (e.g., BOS -- defaults to False)
         
     Returns:
+        R_t: A set of reachable token ids (ints). 
+        U_t: A list of 1-dimensional token ids representing prompts u that each steer to 
+            one of the y in R_t.
     """
     # [1, num_toks]
-    x_0_ids = tokenizer.encode(x_0, return_tensors='pt')
+    x_0_ids = tokenizer.encode(x_0, return_tensors='pt', add_special_tokens=False)
 
     if tokenizer.pad_token_id is None: 
         tokenizer.pad_token_id = tokenizer.eos_token_id
 
-
-    R_t = set()
-    U_t = []
+    Y_to_U = {} # dict mapping output values Y to the prompts that get you there
+    R_t = set() # set of 
+    U_t = [] # List of torch tensors (all on the CPU) -- prompts that get you an R_t member.
 
     # pool of prompts we are considering/extending back 1 token at a time
     pool_list = []
@@ -172,10 +209,13 @@ def greedy_forward_reachability(model, tokenizer, x_0,
     reached = logits[:, 0, :].argmax(-1) # 1-dim tensor
     print("Done!\n")
 
-    print("Computing reachability losses for all single-token prompts...")
-    R_t, U_t = update_R_U_t(R_t, U_t, reached, U) 
+    print("Updating reachable sets...")
+    R_t, U_t, Y_to_U = update_R_U_t(R_t, U_t, Y_to_U, reached, U) 
+    print("Done!\n")
     #U_t id a set of lists, R_t is a set of ints
-    reachability_losses = compute_reachability_loss(logits, R_t)
+    print("Computing reachability losses for all single-token prompts...")
+    reachability_losses = batched_compute_reachability_loss(logits, R_t)
+    print("Done!\n")
     # shape [num_prompts]
 
     # get sorted idx for reachability_losses 
@@ -215,11 +255,12 @@ def greedy_forward_reachability(model, tokenizer, x_0,
 
         # add new reached tokens to R_t and U_t
         print("Updating reachable set starting from size ", len(R_t))
-        R_t, U_t = update_R_U_t(R_t, U_t, reached, U) 
+        # R_t, U_t = update_R_U_t(R_t, U_t, reached, U) 
+        R_t, U_t, Y_to_U = update_R_U_t(R_t, U_t, Y_to_U, reached, U) 
         print("New reachable set size: ", len(R_t))
 
         print("Computing scores for all new prompts...")
-        reachability_losses = compute_reachability_loss(logits, R_t, push=push, pull=pull)
+        reachability_losses = batched_compute_reachability_loss(logits, R_t, push=push, pull=pull)
         print("Done!")
 
         # update pool scores based on new reachable set
@@ -241,4 +282,4 @@ def greedy_forward_reachability(model, tokenizer, x_0,
         pool_scores = pool_scores[sort_idx[:pool_size]]
         print("Done!")
 
-    return R_t, U_t
+    return R_t, U_t, Y_to_U
