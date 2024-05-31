@@ -34,6 +34,8 @@ def parse_args():
                         help='Whether to select a random entry from the pool or the max scoring entry. Default: False')
     parser.add_argument('--output_dir', type=str, required=True,
                         help='Directory to store the output files (args.json, R_t, U_t, historical data).')
+    parser.add_argument('--add-special-tokens', action='store_true',
+                        help='Whether to add special tokens to the prompt. Default: False')
 
     args = parser.parse_args()
 
@@ -59,7 +61,7 @@ def main():
     print("Model dtype: ", model.dtype)
     tokenizer = AutoTokenizer.from_pretrained(args.model)
 
-    R_t, U_t, Y_to_U = greedy_forward_reachability(
+    R_t, U_t, Y_to_U, x_0_ids = greedy_forward_reachability(
         model, tokenizer, args.x_0,
         max_prompt_length=args.max_prompt_length,
         max_iters=args.max_iters,
@@ -68,7 +70,8 @@ def main():
         push=args.push,
         pull=args.pull,
         frac_ext=args.frac_ext,
-        rand_pool=args.rand_pool
+        rand_pool=args.rand_pool,
+        add_special_tokens=args.add_special_tokens
     )
 
     # Save the arguments, R_t, U_t, and historical data to the output directory
@@ -87,6 +90,11 @@ def main():
     with open(os.path.join(args.output_dir, 'U_t.json'), 'w') as f:
         json.dump(U_t, f, indent=4)
     print("R_t and U_t saved as json.")
+
+    print("Saving x_0_ids as json.")
+    with open(os.path.join(args.output_dir, 'x_0_ids.json'), 'w') as f:
+        json.dump(x_0_ids, f, indent=4)
+    print("x_0_ids saved as json.")
 
 if __name__ == "__main__":
     main()
