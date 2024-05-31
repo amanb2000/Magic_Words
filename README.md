@@ -51,6 +51,24 @@ python3 scripts/sgcg.py \
 ```
 
 
+## Open-Ended Exploration of the Reachable Set
+```bash
+python3 scripts/greedy_forward_single.py \
+    --model meta-llama/Meta-Llama-3-8B \
+    --x_0 "helloworld1" \
+    --output_dir results/helloworld1 \
+    --max_iters 100 \
+    --max_parallel 100 \
+    --pool_size 100 \
+    --rand_pool \
+    --push 0.1 \
+    --pull 1.0 \
+    --frac_ext 0.2 
+
+
+```
+
+
 ## Testing
 ```
 # run all tests: 

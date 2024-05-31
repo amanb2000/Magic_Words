@@ -2,6 +2,7 @@ venv/
 build/
 dist/
 env/
+results/*
 *.pyc
 *.pyo
 __pycache__/

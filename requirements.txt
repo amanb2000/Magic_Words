@@ -6,6 +6,7 @@ pandas
 torch
 plotly
 seaborn
+scikit-learn
 
 # HuggingFace Transformers
 transformers
