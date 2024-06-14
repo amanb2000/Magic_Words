@@ -125,10 +125,12 @@ def update_R_U_t(R_t, U_t, Y_to_U, reached, U):
     """
     cnt=0
     for r in reached.tolist():
+        u_list = U[cnt, :].cpu().tolist()
         if r not in R_t:
             R_t.add(r)
-            U_t.append(U[cnt, :].cpu().tolist())
-            Y_to_U[r] = U[cnt, :].cpu().tolist()
+            U_t.append(u_list)
+            Y_to_U[r] = {'first': u_list, 'all': []}
+        Y_to_U[r]['all'].append(u_list)
         cnt+=1
 
     return R_t, U_t, Y_to_U
