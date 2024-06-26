@@ -9,6 +9,8 @@ import torch
 import matplotlib.pyplot as plt
 from ripser import ripser
 
+from tqdm import tqdm 
+
 def parse_args():
     parser = argparse.ArgumentParser(description='Analyze connected components of a layer using Ripser')
     parser.add_argument('--input_file', type=str, help='Path to input file')
@@ -27,7 +29,7 @@ def parse_args():
 def load_jsonl(file_path, layer_num):
     data = []
     with open(file_path, "r") as file:
-        for line in file:
+        for line in tqdm(file):
             data.append(json.loads(line))
 
     # Extract the final token representations
@@ -38,7 +40,7 @@ def load_jsonl(file_path, layer_num):
 def load_jsonl_all(file_path):
     data = []
     with open(file_path, "r") as file:
-        for line in file:
+        for line in tqdm(file):
             data.append(json.loads(line))
 
     # Extract the final token representations
