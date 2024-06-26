@@ -88,7 +88,7 @@ if __name__ == '__main__':
 
 
     # Count connected components
-    epsilon = 20
+    epsilon = 200
     num_components = 2
     while num_components > 1:
         num_components, diagram_h0 = count_connected_components(data, epsilon)
