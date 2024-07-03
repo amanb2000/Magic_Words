@@ -86,6 +86,11 @@ def entropy_of_logits(logits):
     return entropy
 
 def get_rank(logits, desired_word): 
+    """ logits: 
+    """
+    if type(desired_word) == list: 
+        assert len(desired_word) == 1, "desired_word must be a single integer"
+        desired_word = desired_word[0]
     # Check if desired_word is within the valid range
     if not (0 <= desired_word < len(logits)):
         raise ValueError("desired_word is out of range")
