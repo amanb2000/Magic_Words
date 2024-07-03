@@ -11,6 +11,7 @@ import argparse
 import pandas as pd
 import os
 import pdb
+import numpy as np
 
 import torch 
 import transformers
@@ -74,7 +75,10 @@ def load_input_df(df_path):
     # ensure type of answer is str
     input_df['answer'] = input_df['answer'].astype(str)
     # ensure type of answer_ids is int
-    input_df['answer_ids'] = input_df['answer_ids'].apply(lambda x: eval(x))
+    if type(input_df['answer_ids'][0]) == int or type(input_df['answer_ids'][0]) == np.int64:
+        input_df['answer_ids'] = input_df['answer_ids'].astype(int)
+    else: 
+        input_df['answer_ids'] = input_df['answer_ids'].apply(lambda x: eval(x))
 
     return input_df
 
